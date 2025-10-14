@@ -1,10 +1,21 @@
+"use client";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/useAuth";
 
 export default function LoginCard() {
+  const navigate = useNavigate();
+  const { login, isLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // const { login } = useAuth();
+
+  if (isLoggedIn) {
+    navigate("/dashboard");
+    return null;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,7 +31,8 @@ export default function LoginCard() {
     // Dummy login validatie
     setTimeout(() => {
       if (email === "test@vangarde.ai" && password === "1234") {
-        alert("Login succesvol!");
+        login();
+        navigate("/dashboard");
       } else {
         setError("Invalid email or password.");
       }
