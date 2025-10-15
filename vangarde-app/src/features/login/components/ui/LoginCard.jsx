@@ -1,10 +1,23 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/useAuth";
 
 export default function LoginCard() {
+  const navigate = useNavigate();
+  const { login, isLoggedIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // const { login } = useAuth();
+
+  // Redirect wanneer ingelogd 
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,10 +30,11 @@ export default function LoginCard() {
 
     setLoading(true);
 
-    // Dummy login validatie
+    // Dummy login validatie (vervang met echte validatie door APi of OIDC later)
     setTimeout(() => {
       if (email === "test@vangarde.ai" && password === "1234") {
-        alert("Login succesvol!");
+        login();
+        navigate("/dashboard");
       } else {
         setError("Invalid email or password.");
       }
@@ -151,6 +165,21 @@ export default function LoginCard() {
             </button>
           </div>
         </form>
+
+          {/* Voorbereid voor OIDC-integratoe
+      <div style={{ marginTop: 10 }}>
+        <button
+          type="button"
+          onClick={() => {
+            // TODO: OIDC-integratie
+            // Hier kun je straks redirecten naar je OIDC provider login
+            console.log(" TODO: Start OIDC login flow...");
+          }}
+        >
+          Login met OIDC Provider
+        </button>
+      </div>
+    </div> */}
 
         {/* Footer */}
         <div className="text-center text-xs text-gray-500 py-4 border-t">
