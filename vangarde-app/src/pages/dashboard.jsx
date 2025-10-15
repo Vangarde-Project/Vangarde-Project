@@ -8,22 +8,20 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
 
-  // code nog fixen want je word na het inloggen meteen weer terug gestuurd naar login pagina
+  // Redirect als je niet ingelogd bent (werkt vgm nog niet helemaal lekker)
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
-//   // Redirect als niet ingelogd
-//   useEffect(() => {
-//     if (!isLoggedIn) {
-//       navigate("/");
-//     }
-//   }, [isLoggedIn, navigate]);
-
-//   if (!isLoggedIn) return null;
+  // if (!isLoggedIn) return null;
 
   return (
-    <div style={{ padding: 30 }}>
-      <h1>Dashboard</h1>
-      <p>Welkom bij het dashboard</p>
-      <button onClick={logout}>Uitloggen</button>
+    <div className="text-center">
+      <h1 className="text-5xl">Dashboard</h1>
+      <p className="mt-5 text-2xl">Welkom bij het dashboard</p>
+      <button className="mt-5 w-100 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition disabled:opacity-60" onClick={logout}>Uitloggen</button>
     </div>
   );
 }
