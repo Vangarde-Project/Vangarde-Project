@@ -10,7 +10,6 @@ export default function LoginCard() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  // const { login } = useAuth();
 
   // Redirect when logged in
   useEffect(() => {
@@ -19,6 +18,7 @@ export default function LoginCard() {
     }
   }, [isLoggedIn, navigate]);
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -39,6 +39,10 @@ export default function LoginCard() {
     } else {
     setError(result.error || "Invalid email or password.");
    }
+  };
+
+  const handleSocialLogin = (provider) => {
+    console.log(`${provider} login clicked`);
   };
 
   return (
@@ -146,22 +150,53 @@ export default function LoginCard() {
           <div className="space-y-3">
             <button
               type="button"
-              className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => handleSocialLogin("Google gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-green-300 transition"
             >
-              Google
+              <img
+                src="/assets/google.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with Google</span>
             </button>
             <button
               type="button"
-              className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => handleSocialLogin("microsoft gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-red-300 transition"
             >
-              Microsoft Account
+              <img
+                src="/assets/microsoft.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with Microsoft </span>
+            </button>
+           <button
+              type="button"
+              onClick={() => handleSocialLogin("Apple gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md  transition"
+              >
+              <img
+                src="/assets/apple.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with Apple</span>
             </button>
             <button
               type="button"
-              className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => handleSocialLogin("phonenumber gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-blue-300 hover:text-white hover:border-transparent"
             >
-              Apple
+              <img
+                src="/assets/call.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with phone number</span>
             </button>
+
           </div>
         </form>
 
