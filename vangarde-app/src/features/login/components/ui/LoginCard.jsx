@@ -10,15 +10,15 @@ export default function LoginCard() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  // const { login } = useAuth();
 
-  // Redirect wanneer ingelogd 
+  
   useEffect(() => {
     if (isLoggedIn) {
       navigate("/dashboard");
     }
   }, [isLoggedIn, navigate]);
 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
@@ -30,7 +30,7 @@ export default function LoginCard() {
 
     setLoading(true);
 
-    // Dummy login validatie (vervang met echte validatie door APi of OIDC later)
+    
     setTimeout(() => {
       if (email === "test@vangarde.ai" && password === "1234") {
         login();
@@ -40,6 +40,10 @@ export default function LoginCard() {
       }
       setLoading(false);
     }, 1000);
+  };
+
+  const handleSocialLogin = (provider) => {
+    console.log(`${provider} login clicked`);
   };
 
   return (
@@ -147,22 +151,53 @@ export default function LoginCard() {
           <div className="space-y-3">
             <button
               type="button"
-              className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => handleSocialLogin("Google gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-green-500 transition"
             >
-              Google
+              <img
+                src="src/assets/google.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with Google</span>
             </button>
             <button
               type="button"
-              className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => handleSocialLogin("microsoft gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-red-500 transition"
             >
-              Microsoft Account
+              <img
+                src="src/assets/microsoft.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with Microsoft </span>
+            </button>
+           <button
+              type="button"
+              onClick={() => handleSocialLogin("Apple gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-black hover:text-white hover:border-transparent transition"
+              >
+              <img
+                src="src/assets/apple.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with Apple</span>
             </button>
             <button
               type="button"
-              className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => handleSocialLogin("phonenumber gekilikt")}
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-blue-800 hover:text-white hover:border-transparent"
             >
-              Apple
+              <img
+                src="src/assets/call.png"
+                alt=""
+                className="w-5 h-5 object-contain"
+              />
+              <span className="text-sm font-medium translate-x-3">Sign in with phone number</span>
             </button>
+
           </div>
         </form>
 
