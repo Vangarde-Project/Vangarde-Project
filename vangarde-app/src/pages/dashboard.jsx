@@ -8,14 +8,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
 
-  // Redirect als je niet ingelogd bent (werkt vgm nog niet helemaal lekker)
+  // Redirect to login if not logged in
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/");
     }
   }, [isLoggedIn, navigate]);
-
-  // if (!isLoggedIn) return null;
 
   return (
     <div className="text-center">
