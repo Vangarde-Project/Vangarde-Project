@@ -5,13 +5,13 @@ import { useAuth } from "../../auth/useAuth";
 
 export default function LoginCard() {
   const navigate = useNavigate();
-  const { login, isLoggedIn } = useAuth();
+  const { login, isLoggedIn, loading: authLoading, error: authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  
+  // Redirect when logged in
   useEffect(() => {
     if (isLoggedIn) {
       navigate("/dashboard");
@@ -19,10 +19,11 @@ export default function LoginCard() {
   }, [isLoggedIn, navigate]);
 
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    // simple error when fields are empty or invalid
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
@@ -30,16 +31,14 @@ export default function LoginCard() {
 
     setLoading(true);
 
-    
-    setTimeout(() => {
-      if (email === "test@vangarde.ai" && password === "1234") {
-        login();
-        navigate("/dashboard");
-      } else {
-        setError("Invalid email or password.");
-      }
-      setLoading(false);
-    }, 1000);
+    const result = await login(email, password);  
+     setLoading(false);
+
+     if (result.ok) {
+    navigate("/dashboard");
+    } else {
+    setError(result.error || "Invalid email or password.");
+   }
   };
 
   const handleSocialLogin = (provider) => {
