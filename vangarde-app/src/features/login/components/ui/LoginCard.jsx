@@ -155,7 +155,7 @@ export default function LoginCard() {
               className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-green-500 transition"
             >
               <img
-                src="src/assets/google.png"
+                src="/assets/google.png"
                 alt=""
                 className="w-5 h-5 object-contain"
               />
@@ -167,7 +167,7 @@ export default function LoginCard() {
               className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-red-500 transition"
             >
               <img
-                src="src/assets/microsoft.png"
+                src="/assets/microsoft.png"
                 alt=""
                 className="w-5 h-5 object-contain"
               />
@@ -179,7 +179,7 @@ export default function LoginCard() {
               className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-black hover:text-white hover:border-transparent transition"
               >
               <img
-                src="src/assets/apple.png"
+                src="/assets/apple.png"
                 alt=""
                 className="w-5 h-5 object-contain"
               />
@@ -191,7 +191,7 @@ export default function LoginCard() {
               className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-blue-800 hover:text-white hover:border-transparent"
             >
               <img
-                src="src/assets/call.png"
+                src="/assets/call.png"
                 alt=""
                 className="w-5 h-5 object-contain"
               />
