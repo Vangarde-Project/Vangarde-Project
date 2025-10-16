@@ -152,7 +152,7 @@ export default function LoginCard() {
             <button
               type="button"
               onClick={() => handleSocialLogin("Google gekilikt")}
-              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-green-500 transition"
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-green-300 transition"
             >
               <img
                 src="/assets/google.png"
@@ -164,7 +164,7 @@ export default function LoginCard() {
             <button
               type="button"
               onClick={() => handleSocialLogin("microsoft gekilikt")}
-              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-red-500 transition"
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-red-300 transition"
             >
               <img
                 src="/assets/microsoft.png"
@@ -176,7 +176,7 @@ export default function LoginCard() {
            <button
               type="button"
               onClick={() => handleSocialLogin("Apple gekilikt")}
-              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-black hover:text-white hover:border-transparent transition"
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md  transition"
               >
               <img
                 src="/assets/apple.png"
@@ -188,7 +188,7 @@ export default function LoginCard() {
             <button
               type="button"
               onClick={() => handleSocialLogin("phonenumber gekilikt")}
-              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-blue-800 hover:text-white hover:border-transparent"
+              className="w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-blue-300 hover:text-white hover:border-transparent"
             >
               <img
                 src="/assets/call.png"
