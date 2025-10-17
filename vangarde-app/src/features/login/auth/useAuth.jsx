@@ -2,10 +2,9 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-// // Make auth context
+// functions that authProvider can use and provide to other components
 const AuthContext = createContext(null);
 
-// // functions that authProvider can use and provide to other components
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const tokenRef = useRef(null);
@@ -48,7 +47,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem("token", fakeToken);
         setUser(demoUser);
 
-        // flash message for successful login
+        // korte flashmelding
         setFlash({ type: "success", text: "Je bent nu ingelogd!" });
         setTimeout(() => setFlash(null), 3000);
 
@@ -99,6 +98,36 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
 
     // flash message for succesfully logging out
+  // Register: voeg nieuwe gebruiker toe aan mock store als e-mail nog niet bestaat
+  async function register({ firstName, lastName, email, password }) {
+    setLoading(true);
+    setError(null);
+    try {
+      await new Promise((r) => setTimeout(r, 400));
+      if (users.find((u) => u.email === email)) {
+        throw new Error("Er bestaat al een account met dit e-mailadres.");
+      }
+      const newUser = { email, password, name: `${firstName} ${lastName}` };
+      setUsers((prev) => [...prev, newUser]);
+      setLoading(false);
+      setFlash({ type: "success", text: "Account aangemaakt." });
+      setTimeout(() => setFlash(null), 3000);
+      return { ok: true };
+    } catch (err) {
+      console.error("Register failed:", err);
+      setError(err.message);
+      setLoading(false);
+      return { ok: false, error: err.message };
+    }
+  }
+
+  // Uitloggen: maak sessie leeg
+  function logout() {
+    tokenRef.current = null;
+    setUser(null);
+    setError(null);
+    
+    // Toon korte melding
     setFlash({ type: "info", text: "Je bent uitgelogd." });
     setTimeout(() => setFlash(null), 3000);
     navigate("/"); 

@@ -8,7 +8,9 @@ import Dashboard from "./pages/dashboard.jsx";
 import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
+import App from "./App";
 
+// Start de React app en mount op #root
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
