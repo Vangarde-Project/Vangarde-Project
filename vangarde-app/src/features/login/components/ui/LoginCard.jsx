@@ -134,12 +134,27 @@ export default function LoginCard() {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          {/* Placeholder social buttons (zonder iconen) */}
+          {/* Social buttons met logo's (plaats afbeeldingen in public/assets/) */}
           <div className="space-y-3">
-            <button type="button" onClick={() => handleSocialLogin("Google")} className={socialButton}><span className="pl-2">Aanmelden met Google</span></button>
-            <button type="button" onClick={() => handleSocialLogin("Microsoft")} className={socialButton}><span className="pl-2">Aanmelden met Microsoft</span></button>
-            <button type="button" onClick={() => handleSocialLogin("Apple")} className={socialButton}><span className="pl-2">Aanmelden met Apple</span></button>
-            <button type="button" onClick={() => handleSocialLogin("Phone")} className={socialButton}><span className="pl-2">Aanmelden met telefoonnummer</span></button>
+            <button type="button" onClick={() => handleSocialLogin("Google")} className={socialButton} aria-label="Aanmelden met Google">
+              <img src="/assets/google.png" alt="" className="w-5 h-5 object-contain" />
+              <span className="ml-3">Aanmelden met Google</span>
+            </button>
+
+            <button type="button" onClick={() => handleSocialLogin("Microsoft")} className={socialButton} aria-label="Aanmelden met Microsoft">
+              <img src="/assets/microsoft.png" alt="" className="w-5 h-5 object-contain" />
+              <span className="ml-3">Aanmelden met Microsoft</span>
+            </button>
+
+            <button type="button" onClick={() => handleSocialLogin("Apple")} className={socialButton} aria-label="Aanmelden met Apple">
+              <img src="/assets/apple.png" alt="" className="w-5 h-5 object-contain" />
+              <span className="ml-3">Aanmelden met Apple</span>
+            </button>
+
+            <button type="button" onClick={() => handleSocialLogin("Phone")} className={socialButton} aria-label="Aanmelden met telefoonnummer">
+              <img src="/assets/call.png" alt="" className="w-5 h-5 object-contain" />
+              <span className="ml-3">Aanmelden met telefoonnummer</span>
+            </button>
           </div>
 
           {/* Link naar registratie */}
