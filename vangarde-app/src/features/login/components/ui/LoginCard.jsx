@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react"; 
 import { useAuth } from "../../auth/useAuth";
+import SocialButtons from "../../auth/SocialButtons";
 
 export default function LoginCard() {
   const navigate = useNavigate();
-  const { login, isLoggedIn, loading: authLoading, error: authError } = useAuth();
-
+  const { login, signInWithProvider, isLoggedIn, loading: authLoading, error: authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -41,16 +41,7 @@ export default function LoginCard() {
       setError(result.error || "Invalid email or password.");
     }
   };
-
   
-  const handleSocialLogin = (provider) => {
-    console.log(`${provider} login clicked`);
-  };
-
-  
-  const socialButton =
-    "w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-gray-300 transition";
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-lg overflow-hidden">
@@ -59,8 +50,7 @@ export default function LoginCard() {
           <h2 className="text-2xl font-bold">Secure Access</h2>
           <p className="text-sm opacity-90">Enterprise-grade authentication</p>
         </div>
-
-        
+  
         <form
           onSubmit={handleSubmit}
           className="p-6 space-y-5"
@@ -70,7 +60,6 @@ export default function LoginCard() {
             Login form
           </h3>
 
-        
           <div>
             <label
               htmlFor="organization"
@@ -166,55 +155,8 @@ export default function LoginCard() {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => handleSocialLogin("Google")}
-              className={socialButton}
-            >
-              <img src="/assets/google.png" alt="Google logo" className="w-5 h-5" />
-              <span className="text-sm font-medium translate-x-3">
-                Sign in with Google
-              </span>
-            </button>
+          <SocialButtons handleSocialLogin={signInWithProvider} />
 
-            <button
-              type="button"
-              onClick={() => handleSocialLogin("Microsoft")}
-              className={socialButton}
-            >
-              <img
-                src="/assets/microsoft.png"
-                alt="Microsoft logo"
-                className="w-5 h-5"
-              />
-              <span className="text-sm font-medium translate-x-3">
-                Sign in with Microsoft
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSocialLogin("Apple")}
-              className={socialButton}
-            >
-              <img src="/assets/apple.png" alt="Apple logo" className="w-5 h-5" />
-              <span className="text-sm font-medium translate-x-3">
-                Sign in with Apple
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSocialLogin("Phone")}
-              className={socialButton}
-            >
-              <img src="/assets/call.png" alt="Phone icon" className="w-5 h-5" />
-              <span className="text-sm font-medium translate-x-3">
-                Sign in with phone number
-              </span>
-            </button>
-          </div>
         </form>
 
         {/* 🔹 Footer */}
