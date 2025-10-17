@@ -63,6 +63,28 @@ export default function LoginCard() {
   const socialButton =
     "w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-gray-300 transition";
 
+  // Inline SVG icon components (geen externe bestanden nodig)
+  const EyeIcon = ({ className = 'w-5 h-5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+
+  const EyeOffIcon = ({ className = 'w-5 h-5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10.47 10.47A3 3 0 0113.53 13.53" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 12s4-7 10-7a9.77 9.77 0 015.11 1.36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21.5 16.5A9.77 9.77 0 0112 19c-6 0-10-7-10-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+
+  // Eenvoudige social-logo placeholders (gekleurde cirkel met letter)
+  const SocialIcon = ({ label = 'G', bg = 'bg-gray-300', className = 'w-5 h-5 text-white flex items-center justify-center rounded-full' }) => (
+    <span className={`${className} ${bg} inline-flex items-center justify-center text-xs font-semibold`} aria-hidden="true">{label}</span>
+  );
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white w-[420px] md:w-[520px] rounded-2xl shadow-lg overflow-hidden">
@@ -113,9 +135,9 @@ export default function LoginCard() {
             />
             {fieldErrors.password && <p id="password-error" className="text-red-500 text-sm mt-1" role="alert">{fieldErrors.password}</p>}
 
-            {/* Knop om wachtwoord te tonen/verbergen (tekst i.p.v. icoon) */}
+            {/* Knop om wachtwoord te tonen/verbergen (icoon vanuit public/assets) */}
             <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Verberg wachtwoord" : "Toon wachtwoord"} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700 focus:outline-none">
-              {showPassword ? 'Verberg' : 'Toon'}
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </button>
           </div>
 
@@ -137,22 +159,22 @@ export default function LoginCard() {
           {/* Social buttons met logo's (plaats afbeeldingen in public/assets/) */}
           <div className="space-y-3">
             <button type="button" onClick={() => handleSocialLogin("Google")} className={socialButton} aria-label="Aanmelden met Google">
-              <img src="/assets/google.png" alt="" className="w-5 h-5 object-contain" />
+              <img src="/assets/google.png" alt="Google logo" className="w-5 h-5 object-contain" />
               <span className="ml-3">Aanmelden met Google</span>
             </button>
 
             <button type="button" onClick={() => handleSocialLogin("Microsoft")} className={socialButton} aria-label="Aanmelden met Microsoft">
-              <img src="/assets/microsoft.png" alt="" className="w-5 h-5 object-contain" />
+              <img src="/assets/microsoft.png" alt="Microsoft logo" className="w-5 h-5 object-contain" />
               <span className="ml-3">Aanmelden met Microsoft</span>
             </button>
 
             <button type="button" onClick={() => handleSocialLogin("Apple")} className={socialButton} aria-label="Aanmelden met Apple">
-              <img src="/assets/apple.png" alt="" className="w-5 h-5 object-contain" />
+              <img src="/assets/apple.png" alt="Apple logo" className="w-5 h-5 object-contain" />
               <span className="ml-3">Aanmelden met Apple</span>
             </button>
 
             <button type="button" onClick={() => handleSocialLogin("Phone")} className={socialButton} aria-label="Aanmelden met telefoonnummer">
-              <img src="/assets/call.png" alt="" className="w-5 h-5 object-contain" />
+              <img src="/assets/call.png" alt="Telefoon logo" className="w-5 h-5 object-contain" />
               <span className="ml-3">Aanmelden met telefoonnummer</span>
             </button>
           </div>

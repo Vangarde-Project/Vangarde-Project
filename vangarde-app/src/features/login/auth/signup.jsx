@@ -4,6 +4,23 @@ import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 
+  // Inline icons for show/hide password (geen externe bestanden)
+  const EyeIcon = ({ className = 'w-5 h-5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+
+  const EyeOffIcon = ({ className = 'w-5 h-5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10.47 10.47A3 3 0 0113.53 13.53" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 12s4-7 10-7a9.77 9.77 0 015.11 1.36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21.5 16.5A9.77 9.77 0 0112 19c-6 0-10-7-10-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+
 export default function Signup() {
   console.log("Signup rendered");
   const navigate = useNavigate();
@@ -132,7 +149,9 @@ export default function Signup() {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Wachtwoord</label>
             <input id="password" name="password" ref={passwordRef} type={showPassword ? "text" : "password"} value={form.password} onChange={handleChange} aria-invalid={fieldErrors.password ? 'true' : 'false'} aria-describedby={fieldErrors.password ? 'password-error' : undefined} aria-required="true" className={`w-full border rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.password ? 'border-red-400' : ''}`} />
             {fieldErrors.password && <p id="password-error" className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>}
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">{showPassword ? 'Verberg' : 'Toon'}</button>
+            <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Verberg wachtwoord" : "Toon wachtwoord"} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
           </div>
 
           {/* Bevestig wachtwoord */}
@@ -140,7 +159,9 @@ export default function Signup() {
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Bevestig wachtwoord</label>
             <input id="confirmPassword" name="confirmPassword" ref={confirmRef} type={showConfirm ? "text" : "password"} value={form.confirmPassword} onChange={handleChange} aria-invalid={fieldErrors.confirmPassword ? 'true' : 'false'} aria-describedby={fieldErrors.confirmPassword ? 'confirmPassword-error' : undefined} aria-required="true" className={`w-full border rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.confirmPassword ? 'border-red-400' : ''}`} />
             {fieldErrors.confirmPassword && <p id="confirmPassword-error" className="text-red-500 text-sm mt-1">{fieldErrors.confirmPassword}</p>}
-            <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">{showConfirm ? 'Verberg' : 'Toon'}</button>
+            <button type="button" onClick={() => setShowConfirm(!showConfirm)} aria-label={showConfirm ? "Verberg wachtwoord" : "Toon wachtwoord"} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">
+              {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
           </div>
 
           {/* Globale foutmelding */}
