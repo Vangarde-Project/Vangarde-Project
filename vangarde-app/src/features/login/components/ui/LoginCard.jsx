@@ -3,11 +3,13 @@ import React, { useState, useEffect, useRef } from "react";
 import useForm from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
+import SocialButtons from "../../auth/SocialButtons";
 
 export default function LoginCard() {
   const navigate = useNavigate();
-  const { login, isLoggedIn } = useAuth();
-
+  const { login, signInWithProvider, isLoggedIn, loading: authLoading, error: authError } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -56,9 +58,9 @@ export default function LoginCard() {
   };
 
   // Placeholder voor social login acties
-  const handleSocialLogin = (provider) => {
-    console.log(`${provider} login clicked`);
-  };
+//   const handleSocialLogin = (provider) => {
+//     console.log(`${provider} login clicked`);
+//   };
 
   const socialButton =
     "w-full flex items-center justify-start gap-3 border border-gray-300 text-gray-800 py-2.5 px-4 rounded-md hover:bg-gray-300 transition";
@@ -156,31 +158,11 @@ export default function LoginCard() {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          {/* Social buttons met logo's (plaats afbeeldingen in public/assets/) */}
-          <div className="space-y-3">
-            <button type="button" onClick={() => handleSocialLogin("Google")} className={socialButton} aria-label="Aanmelden met Google">
-              <img src="/assets/google.png" alt="Google logo" className="w-5 h-5 object-contain" />
-              <span className="ml-3">Aanmelden met Google</span>
-            </button>
-
-            <button type="button" onClick={() => handleSocialLogin("Microsoft")} className={socialButton} aria-label="Aanmelden met Microsoft">
-              <img src="/assets/microsoft.png" alt="Microsoft logo" className="w-5 h-5 object-contain" />
-              <span className="ml-3">Aanmelden met Microsoft</span>
-            </button>
-
-            <button type="button" onClick={() => handleSocialLogin("Apple")} className={socialButton} aria-label="Aanmelden met Apple">
-              <img src="/assets/apple.png" alt="Apple logo" className="w-5 h-5 object-contain" />
-              <span className="ml-3">Aanmelden met Apple</span>
-            </button>
-
-            <button type="button" onClick={() => handleSocialLogin("Phone")} className={socialButton} aria-label="Aanmelden met telefoonnummer">
-              <img src="/assets/call.png" alt="Telefoon logo" className="w-5 h-5 object-contain" />
-              <span className="ml-3">Aanmelden met telefoonnummer</span>
-            </button>
-          </div>
-
+          <SocialButtons handleSocialLogin={signInWithProvider} />
+         
           {/* Link naar registratie */}
           <p className="text-center text-sm text-gray-600 mt-4">Nog geen account? <button type="button" onClick={() => navigate("/signup")} className="text-blue-600 font-medium hover:underline">Registreren</button></p>
+
         </form>
 
         {/* Footer */}
