@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
+import { getKvKData } from "../services/authService";
 
 // === Icons ===
 const EyeIcon = ({ className = "w-5 h-5" }) => (
@@ -31,11 +32,16 @@ export default function Signup() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  const { values: form, handleChange, errors: fieldErrors, setErrors } = useForm({
+  // === Formstate ===
+  const { values: form, handleChange, setValues, errors: fieldErrors, setErrors } = useForm({
     firstName: "",
     lastName: "",
     email: "",
     functieTitel: "",
+    kvkNummer: "",
+    bedrijfsnaam: "",
+    adres: "",
+    sector: "",
     password: "",
     confirmPassword: "",
   });
@@ -58,6 +64,31 @@ export default function Signup() {
   useEffect(() => {
     if (success) successBtnRef.current?.focus();
   }, [success]);
+
+  // === KvK Lookup ===
+  const handleKvKLookup = async (e) => {
+    const kvk = e.target.value;
+    handleChange(e);
+    if (kvk.length < 8) return; // minimaal 8 cijfers voor lookup
+
+    try {
+      const info = await getKvKData(kvk);
+      if (info) {
+        setValues((prev) => ({
+          ...prev,
+          kvkNummer: info.kvkNummer,
+          bedrijfsnaam: info.handelsnaam || "",
+          adres: `${info.straat || ""} ${info.huisnummer || ""}, ${info.postcode || ""} ${info.plaats || ""}`,
+          sector: info.sbiOmschrijving || "",
+        }));
+        setError("");
+      } else {
+        setError("Geen gegevens gevonden voor dit KvK-nummer.");
+      }
+    } catch {
+      setError("Fout bij ophalen KvK-gegevens (controleer API-key).");
+    }
+  };
 
   // === Bestandvalidatie + progress simulatie ===
   const handleFileValidation = (file, setter, errorSetter, label, fieldKey) => {
@@ -116,6 +147,8 @@ export default function Signup() {
     if (!form.lastName || form.lastName.trim().length < 3)
       errors.lastName = "Achternaam moet minimaal 3 karakters bevatten.";
     if (!form.email) errors.email = "Vul je e-mailadres in.";
+    if (!form.kvkNummer || form.kvkNummer.trim().length < 8)
+      errors.kvkNummer = "Vul een geldig KvK-nummer in.";
     if (!form.functieTitel || form.functieTitel.trim().length < 3)
       errors.functieTitel = "Functietitel moet minimaal 3 karakters bevatten.";
     if (!form.password) errors.password = "Vul je wachtwoord in.";
@@ -150,7 +183,6 @@ export default function Signup() {
     }
   };
 
-  // === Upload status controleren ===
   const uploadsIncomplete =
     !functieProfielFile ||
     !cvFile ||
@@ -162,7 +194,7 @@ export default function Signup() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white w-[420px] md:w-[520px] rounded-2xl shadow-lg overflow-hidden">
-        {/* === Gradient Header === */}
+        {/* === Header === */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-center py-6 shadow-inner">
           <h2 className="text-2xl font-bold tracking-tight">Create Account</h2>
           <p className="text-sm opacity-90">Join Vangarde Intelligence</p>
@@ -176,11 +208,20 @@ export default function Signup() {
           <Input label="E-mailadres" name="email" type="email" value={form.email} onChange={handleChange} error={fieldErrors.email} />
           <Input label="Officiële functietitel" name="functieTitel" value={form.functieTitel} onChange={handleChange} error={fieldErrors.functieTitel} />
 
+          {/* === Bedrijfsinformatie === */}
+          <div className="mt-4 border-t border-gray-200 pt-6">
+            <h3 className="text-base font-semibold text-gray-800 flex items-center gap-2">Bedrijfsinformatie</h3>
+            <p className="text-sm text-gray-500 mb-4">Vul je KvK-nummer in. Bedrijfsnaam, adres en sector worden automatisch opgehaald.</p>
+
+            <Input label="KvK-nummer" name="kvkNummer" value={form.kvkNummer} onChange={handleKvKLookup} error={fieldErrors.kvkNummer} />
+            <Input label="Bedrijfsnaam" name="bedrijfsnaam" value={form.bedrijfsnaam} readOnly />
+            <Input label="Adres" name="adres" value={form.adres} readOnly />
+            <Input label="Sector" name="sector" value={form.sector} readOnly />
+          </div>
+
           {/* === Documenten toevoegen === */}
           <div className="mt-6 border-t border-gray-200 pt-6">
-            <h3 className="text-base font-semibold text-gray-800 flex items-center gap-2">
-              Documenten toevoegen
-            </h3>
+            <h3 className="text-base font-semibold text-gray-800 flex items-center gap-2">Documenten toevoegen</h3>
             <p className="text-sm text-gray-500 mb-4">
               Voeg je officiële functieprofiel en je actuele CV toe in PDF-formaat (max. 10 MB).
             </p>
@@ -268,8 +309,8 @@ export default function Signup() {
   );
 }
 
-// === Herbruikbare subcomponenten ===
-function Input({ label, name, type = "text", value, onChange, error }) {
+// === Subcomponenten ===
+function Input({ label, name, type = "text", value, onChange, error, readOnly }) {
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
@@ -281,7 +322,8 @@ function Input({ label, name, type = "text", value, onChange, error }) {
         type={type}
         value={value}
         onChange={onChange}
-        className={`w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 ${error ? "border-red-400" : ""}`}
+        readOnly={readOnly}
+        className={`w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 ${error ? "border-red-400" : ""} ${readOnly ? "bg-gray-100 cursor-not-allowed" : ""}`}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
