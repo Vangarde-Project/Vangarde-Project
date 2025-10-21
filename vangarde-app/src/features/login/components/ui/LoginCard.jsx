@@ -136,16 +136,6 @@ export default function LoginCard() {
             <label htmlFor="functieTitel" className="block text-sm font-medium text-gray-700 mb-1">
               Officiële functietitel
             </label>
-            <input
-              id="functieTitel"
-              ref={functieRef}
-              name="functieTitel"
-              type="text"
-              placeholder="Gebruik je officiële functietitel zoals vermeld op je contract."
-              value={values.functieTitel}
-              onChange={handleChange}
-              className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.functieTitel ? 'border-red-400' : ''}`}
-            />
             {fieldErrors.functieTitel && <p className="text-red-500 text-sm mt-1">{fieldErrors.functieTitel}</p>}
           </div>
 
