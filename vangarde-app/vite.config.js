@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "",
+  base: "./",
   server: {
     proxy: {
       // Dev-only proxy: verwijst /api naar je lokale API-server
