@@ -20,7 +20,7 @@ export default function LoginCard() {
   const { values, errors: fieldErrors, handleChange, setErrors } = useForm({
     email: "",
     password: "",
-    functieTitel: "",
+   
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function LoginCard() {
     const errors = {};
     if (!values.email) errors.email = "Vul je e-mail of gebruikersnaam in.";
     if (!values.password) errors.password = "Vul je wachtwoord in.";
-    if (!values.functieTitel) errors.functieTitel = "Vul je officiële functietitel in.";
+    
 
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
@@ -131,13 +131,7 @@ export default function LoginCard() {
             {fieldErrors.password && <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>}
           </div>
 
-          {/* Nieuw veld: Officiële functietitel */}
-          <div>
-            <label htmlFor="functieTitel" className="block text-sm font-medium text-gray-700 mb-1">
-              Officiële functietitel
-            </label>
-            {fieldErrors.functieTitel && <p className="text-red-500 text-sm mt-1">{fieldErrors.functieTitel}</p>}
-          </div>
+      
 
           {/* Globale foutmelding */}
           {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
