@@ -4,6 +4,7 @@ import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { getKvKData } from "../services/authService";
+import LegalLinks from "../components/ui/LegalLinks";
 
 // Icons
 const EyeIcon = ({ className = "w-5 h-5" }) => (
@@ -262,6 +263,8 @@ const handleCompanyLookup = (e) => {
             {loading ? "Even aanmaken..." : "Account aanmaken →"}
           </button>
 
+         <LegalLinks />
+
           <p className="text-center text-sm text-gray-600 mt-4">
             Heb je al een account?{" "}
             <button type="button" onClick={() => navigate("/login")} className="text-blue-600 font-medium hover:underline">
@@ -276,8 +279,8 @@ const handleCompanyLookup = (e) => {
             Neem contact op
           </a>
         </div>
-      </div>
     </div>
+  </div>
   );
 }
 

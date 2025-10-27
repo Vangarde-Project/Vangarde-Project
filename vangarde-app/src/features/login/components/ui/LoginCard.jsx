@@ -4,6 +4,7 @@ import useForm from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import SocialButtons from "../../auth/SocialButtons";
+import LegalLinks from "./LegalLinks";
 
 export default function LoginCard() {
   const navigate = useNavigate();
@@ -131,8 +132,6 @@ export default function LoginCard() {
             {fieldErrors.password && <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>}
           </div>
 
-      
-
           {/* Globale foutmelding */}
           {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
 
@@ -144,6 +143,8 @@ export default function LoginCard() {
           >
             {loading ? "Even laden..." : "Inloggen →"}
           </button>
+
+        <LegalLinks />
 
           {/* Scheiding + social login */}
           <div className="flex items-center gap-2">
