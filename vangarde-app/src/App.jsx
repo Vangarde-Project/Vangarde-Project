@@ -7,7 +7,8 @@ import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
-
+import TermsOfService from "./pages/terms-of-service.jsx";
+import PrivacyPolicy from "./pages/privacy-policy.jsx";
 
 export default function App() {
   return (
@@ -31,6 +32,9 @@ export default function App() {
 
             {/* Fallback -> toon login */}
             <Route path="*" element={<PublicRoute> <LoginCard /> </PublicRoute>} />
+
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
         </AuthProvider>
       </div>
