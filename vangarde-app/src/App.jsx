@@ -40,6 +40,9 @@ export default function App() {
 
             {/* Fallback -> toon login */}
             <Route path="*" element={<PublicRoute> <LoginCard /> </PublicRoute>} />
+
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
         </AuthProvider>
       </div>

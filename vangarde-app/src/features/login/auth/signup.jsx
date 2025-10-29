@@ -297,6 +297,8 @@ export default function Signup() {
             {loading ? "Even aanmaken..." : "Account aanmaken →"}
           </button>
 
+         <LegalLinks />
+
           <p className="text-center text-sm text-gray-600 mt-4">
             Heb je al een account?{" "}
             <button type="button" onClick={() => navigate("/login")} className="text-blue-600 font-medium hover:underline">
@@ -311,8 +313,8 @@ export default function Signup() {
             Neem contact op
           </a>
         </div>
-      </div>
     </div>
+  </div>
   );
 }
 
