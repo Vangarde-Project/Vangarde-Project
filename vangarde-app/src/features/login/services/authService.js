@@ -1,9 +1,9 @@
 // src/features/login/services/authService.js
 // -------------------------------------------------------
-// ✅ Verbeterde auth + KvK helper
+// ✅ Verbeterde auth + KvK helper (lokaal + online)
 // - Mock login + registratie
-// - KvK lookup met fallback naar backend endpoint
-// - Veilig via VITE_API_BASE
+// - KvK lookup via mock (lokaal) of serverless function (online)
+// - Veilig via VITE_API_BASE + VITE_KVK_API_KEY
 // -------------------------------------------------------
 
 const mockUsers = [
@@ -12,6 +12,20 @@ const mockUsers = [
 ];
 
 const STORAGE_USER_KEY = "vangarde_user_v1";
+
+// 🔒 Environment variabelen
+const apiBase = (import.meta.env.VITE_API_BASE || "").replace(/\/$/, "");
+const apiKey = import.meta.env.VITE_KVK_API_KEY || "";
+
+/** 🔧 Dynamische API URL helper -------------------------------- */
+const getApiUrl = (path) => {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    // Lokaal → gebruik mockserver
+    return `http://localhost:5174${path}`;
+  }
+  // Online → gebruik serverless functie
+  return `${apiBase}${path}`;
+};
 
 /** 🟢 LOGIN --------------------------------------------------- */
 export const login = async (email, password) => {
@@ -34,126 +48,38 @@ export const logout = () => {
   return { ok: true };
 };
 
-/** 🟡 GET CURRENT USER ---------------------------------------- */
-export const getCurrentUser = () => {
-  const raw = localStorage.getItem(STORAGE_USER_KEY);
-  return raw ? JSON.parse(raw) : null;
-};
-
-/** 🧩 KVK LOOKUP ----------------------------------------------- */
-export const getKvKData = async (kvkNummer) => {
-  if (!kvkNummer) return null;
-  const digits = String(kvkNummer).replace(/\D/g, "");
-  if (digits.length < 8) return null;
-
-  const apiBase = (import.meta.env.VITE_API_BASE || "").replace(/\/$/, "");
-  const url = apiBase
-    ? `${apiBase}/api/kvk-lookup?kvkNummer=${encodeURIComponent(digits)}`
-    : `/api/kvk-lookup?kvkNummer=${encodeURIComponent(digits)}`;
+/** 🧠 AUTOLOOKUP OP BEDRIJFSNAAM -------------------------------------------- */
+export const getCompanyDataByName = async (bedrijfsnaam) => {
+  if (!bedrijfsnaam || bedrijfsnaam.trim().length < 3) return null;
 
   try {
+    const url = getApiUrl(`/api/kvk-lookup?query=${encodeURIComponent(bedrijfsnaam)}`);
+
     const res = await fetch(url, {
       method: "GET",
-      credentials: "same-origin",
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        "x-api-key": apiKey, // ✅ sleutel komt uit .env.local (alleen backend leest hem echt)
+      },
     });
 
-    const text = await res.text().catch(() => "");
-    if (res.status === 401) throw new Error("Unauthorized: KVK API key ontbreekt of is ongeldig.");
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error(text || `KvK lookup failed (${res.status})`);
+    if (!res.ok) throw new Error(`Fout bij ophalen bedrijfsdata (${res.status})`);
 
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new Error("KvK lookup returned invalid JSON: " + text.slice(0, 200));
-    }
-
-    const kvkNum = data.kvkNummer || data.kvknummer || data.kvk || digits;
-    const handelsnaam = data.handelsnaam || data.bedrijfsnaam || data.naam || data.name || "";
-    const straat = data.straat || data.straatNaam || data.street || "";
-    const huisnummer = data.huisnummer || data.huisnr || data.huisnummerToev || "";
-    const postcode = data.postcode || data.zip || "";
-    const plaats = data.plaats || data.woonplaats || data.city || "";
-    const sbiOmschrijving =
-      data.sbiOmschrijving ||
-      (Array.isArray(data.sbi) && data.sbi[0]?.omschrijving) ||
-      data.sector ||
-      data.primaryActivity ||
-      "";
+    const data = await res.json();
 
     return {
-      kvkNummer: kvkNum,
-      handelsnaam,
-      straat,
-      huisnummer,
-      postcode,
-      plaats,
-      sbiOmschrijving,
-      _raw: data,
+      kvkNummer: data.kvkNummer || "",
+      bedrijfsnaam: data.bedrijfsnaam || bedrijfsnaam,
+      adres: data.adres || "",
+      straat: data.straat || "",
+      huisnummer: data.huisnummer || "",
+      postcode: data.postcode || "",
+      plaats: data.plaats || "",
+      website: data.website || "",
+      sector: data.sector || data.sbiOmschrijving || "",
     };
   } catch (err) {
-    throw new Error("KvK lookup error: " + (err.message || String(err)));
+    console.error("getCompanyDataByName error:", err);
+    return null;
   }
-};
-
-/** 🟢 REGISTER USER -------------------------------------------- */
-export const registerUser = async (formData) => {
-  await new Promise((r) => setTimeout(r, 400));
-
-  // ✅ Support voor FormData of JSON-object
-  const get = (key) => (formData.get ? formData.get(key) : formData[key]);
-
-  const email = get("email");
-  const password = get("password");
-  const firstName = get("firstName") || "";
-  const lastName = get("lastName") || "";
-  const bedrijfsnaam = get("bedrijfsnaam") || "";
-  const kvkNummer = get("kvkNummer") || "";
-  const adres = get("adres") || "";
-  const website = get("website") || "";
-  const sector = get("sector") || "";
-
-  if (!email || !password) return { ok: false, error: "E-mail en wachtwoord zijn verplicht" };
-  if (mockUsers.some((u) => u.email === email)) return { ok: false, error: "E-mailadres bestaat al" };
-
-  // Mock user opslaan
-  const id = Date.now().toString();
-  const newUser = {
-    id,
-    email,
-    password,
-    name: `${firstName} ${lastName}`.trim(),
-    bedrijfsnaam,
-    kvkNummer,
-    adres,
-    website,
-    sector,
-    role: "User",
-  };
-  mockUsers.push(newUser);
-
-  // Simuleer backend call (optioneel future-ready)
-  const apiBase = import.meta.env.VITE_API_BASE;
-  if (apiBase) {
-    try {
-      await fetch(`${apiBase}/api/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
-      });
-    } catch (err) {
-      console.warn("Mock fallback gebruikt (backend niet bereikbaar)", err);
-    }
-  }
-
-  localStorage.setItem(
-    STORAGE_USER_KEY,
-    JSON.stringify({ id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role })
-  );
-
-  console.log("🧾 Mock-registratie opgeslagen:", newUser);
-
-  return { ok: true, user: { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role } };
 };
