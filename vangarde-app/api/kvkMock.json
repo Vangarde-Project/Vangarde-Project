@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "kvkNumber": "12345678",
+      "tradeNames": {
+        "businessName": "Vangarde B.V."
+      },
+      "addresses": [
+        {
+          "street": "Innovatieweg",
+          "houseNumber": "10",
+          "postalCode": "1234AB",
+          "city": "Utrecht"
+        }
+      ],
+      "branch": "IT Consultancy"
+    }
+  ]
+}

@@ -3,7 +3,12 @@ import React, { useState, useRef, useEffect } from "react";
 import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
+
 import { getKvKData } from "../services/authService";
+import { useDebounce } from "../hooks/useDebounce";
+
+
+
 
 // Icons
 const EyeIcon = ({ className = "w-5 h-5" }) => (
@@ -38,6 +43,7 @@ export default function Signup() {
     confirmPassword: "",
   });
 
+  const [kvkStatus, setKvkStatus] = useState("idle");
   const [functieProfielFile, setFunctieProfielFile] = useState(null);
   const [cvFile, setCvFile] = useState(null);
   const [functieError, setFunctieError] = useState("");
@@ -58,80 +64,88 @@ export default function Signup() {
     if (success) successBtnRef.current?.focus();
   }, [success]);
 
-  // Bedrijfsnaam → KvK lookup
-const handleCompanyLookup = (e) => {
-  const name = e.target.value;
-  handleChange(e);
 
-  if (lookupTimer.current) clearTimeout(lookupTimer.current);
-  if (!name || name.trim().length < 3) {
-    setValues((prev) => ({ ...prev, kvkNummer: "", adres: "", sector: "", website: "" }));
-    return;
-  }
+  // ✅ Nieuw: debounce voor bedrijfsnaam
+  const [pendingName, setPendingName] = useState("");
+  const debouncedName = useDebounce(pendingName, 600);
 
-  lookupTimer.current = setTimeout(async () => {
-    setError("");
-    setKvkLoading(true);
+  // ✅ KvK lookup met visuele status
+  useEffect(() => {
+    if (!debouncedName || debouncedName.trim().length < 3) {
+      setKvkStatus("idle");
+      setValues((prev) => ({
+        ...prev,
+        kvkNummer: "",
+        adres: "",
+        sector: "",
+        website: "",
+      }));
+      return;
+    }
+
+    async function lookup() {
+      setError("");
+      setKvkStatus("loading");
+      setKvkLoading(true);
+
     try {
-      const info = await getKvKData(name);
+      const info = await getKvKData(debouncedName);
 
+
+
+      // ✅ Controleer of er iets nuttigs is teruggekomen
       if (!info || Object.keys(info).length === 0) {
+        setKvkStatus("error");
         setError("Geen KvK-gegevens gevonden voor deze bedrijfsnaam.");
-        setValues((prev) => ({ ...prev, kvkNummer: "", adres: "", sector: "", website: "" }));
-        setKvkLoading(false);
+        setValues((prev) => ({
+          ...prev,
+          kvkNummer: "",
+          adres: "",
+          sector: "",
+          website: "",
+        }));
         return;
       }
 
-      const kvkNummer = info.kvkNummer || info.kvk || info.kvknummer || "";
+      // ✅ Alles OK — status op success zetten
+      setKvkStatus("success");
+
+      // Adres samenstellen
       let adres = "";
-
-      // Adres opbouwen
-      if (typeof info.adres === "string" && info.adres.trim()) {
-        adres = info.adres;
-      } else {
-        const straat = info.straat || info.straatNaam || info.street || "";
-        const huisnummer = info.huisnummer || info.huisnr || "";
-        const toevoeging = info.huisnummerToevoeging || info.hnrToevoeging || "";
-        const postcode = info.postcode || info.zip || "";
-        const plaats = info.plaats || info.city || "";
-        const parts = [straat, huisnummer + (toevoeging ? " " + toevoeging : ""), postcode, plaats].filter(Boolean);
-        adres = parts.join(", ");
+      const a = info.address || {};
+      if (a.street || a.postalCode || a.city) {
+        adres = `${a.street || ""} ${a.houseNumber || ""}, ${a.postalCode || ""} ${a.city || ""}`.trim();
       }
 
-      const sector =
-        info.sbiOmschrijving ||
-        info.sbi?.[0]?.omschrijving ||
-        info.sector ||
-        info.primaryActivity ||
-        "";
+      // Website normaliseren
+      let website = info.website || "";
+      if (website && !/^https?:\/\//i.test(website)) website = `https://${website}`;
 
-      // ✅ Automatische website-detectie
-      let website = "";
-      if (info.website) website = info.website;
-      else if (info.websites?.length) website = info.websites[0];
-      else if (info.url) website = info.url;
-      else if (info.contactInfo?.website) website = info.contactInfo.website;
-
-      // ✅ Normaliseer URL (voeg https:// toe als dat ontbreekt)
-      if (website && !/^https?:\/\//i.test(website)) {
-        website = `https://${website}`;
-      }
-
+      // ✅ Waarden vullen
       setValues((prev) => ({
         ...prev,
-        kvkNummer,
+        kvkNummer: info.kvkNumber || "",
         adres,
-        sector,
+        sector: info.branch || "",
         website,
       }));
     } catch (err) {
       console.error("KvK lookup error:", err);
+      setKvkStatus("error");
       setError("Fout bij ophalen KvK-gegevens.");
     } finally {
       setKvkLoading(false);
     }
-  }, 500);
-};
+    }
+
+    lookup();
+  }, [debouncedName]);
+
+  // ✅ Input-handler koppelen aan debounce
+  const handleCompanyLookup = (e) => {
+    handleChange(e);
+    setPendingName(e.target.value);
+  };
 
   // Bestandcontrole
   const handleFileValidation = (file, setter, errorSetter, label, key) => {
@@ -222,16 +236,37 @@ const handleCompanyLookup = (e) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Bedrijfsinformatie */}
-          <div>
-            <h3 className="text-base font-semibold text-gray-800 mb-3">Bedrijfsinformatie</h3>
-            <Input label="Bedrijfsnaam" name="bedrijfsnaam" value={form.bedrijfsnaam} onChange={handleCompanyLookup} error={fieldErrors.bedrijfsnaam} />
-            {kvkLoading && <p className="text-sm text-gray-500">Bedrijfsgegevens ophalen...</p>}
-            <Input label="KvK-nummer (auto)" name="kvkNummer" value={form.kvkNummer} readOnly />
-            <Input label="Adres" name="adres" value={form.adres} readOnly />
-            <Input label="Bedrijfswebsite (URL)" name="website" value={form.website} onChange={handleChange} placeholder="https://www.jouwbedrijf.nl" />
-            <Input label="Sector" name="sector" value={form.sector} readOnly />
-          </div>
+         <div>
+          <Input
+            label="Bedrijfsnaam"
+            name="bedrijfsnaam"
+            value={form.bedrijfsnaam}
+            onChange={handleCompanyLookup}
+            error={fieldErrors.bedrijfsnaam}
+          />
+
+          {/* ✅ Feedbackmelding onder veld */}
+          {kvkStatus === "loading" && (
+            <p className="text-sm text-blue-600 mt-1">🔄 Bedrijfsgegevens worden opgehaald...</p>
+          )}
+          {kvkStatus === "success" && (
+            <p className="text-sm text-green-600 mt-1">✅ Bedrijfsgegevens succesvol opgehaald!</p>
+          )}
+          {kvkStatus === "error" && (
+            <p className="text-sm text-red-600 mt-1">❌ Geen KvK-gegevens gevonden.</p>
+          )}
+
+          <Input label="KvK-nummer (auto)" name="kvkNummer" value={form.kvkNummer} readOnly />
+          <Input label="Adres" name="adres" value={form.adres} readOnly />
+          <Input
+            label="Bedrijfswebsite (URL)"
+            name="website"
+            value={form.website}
+            onChange={handleChange}
+            placeholder="https://www.jouwbedrijf.nl"
+          />
+          <Input label="Sector" name="sector" value={form.sector} readOnly />
+        </div>
 
           {/* Persoonsgegevens */}
           <div>
