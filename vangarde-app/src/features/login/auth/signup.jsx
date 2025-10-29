@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
-
-import { getKvKData } from "../services/authService";
+import { getCompanyDataByName } from "../services/authService";
 import { useDebounce } from "../hooks/useDebounce";
 
 
@@ -60,43 +59,36 @@ export default function Signup() {
   const successBtnRef = useRef(null);
   const lookupTimer = useRef(null);
 
-  useEffect(() => {
-    if (success) successBtnRef.current?.focus();
-  }, [success]);
+// ✅ KvK lookup op bedrijfsnaam met automatische invulling
+// 🧩 Nieuw: bedrijfsnaam live lookup + automatische invulling
+const [pendingName, setPendingName] = useState("");
+const debouncedName = useDebounce(pendingName, 600);
 
+useEffect(() => {
+  if (!debouncedName || debouncedName.trim().length < 3) {
+    setKvkStatus("idle");
+    setValues((prev) => ({
+      ...prev,
+      kvkNummer: "",
+      adres: "",
+      sector: "",
+      website: "",
+    }));
+    return;
+  }
 
-  // ✅ Nieuw: debounce voor bedrijfsnaam
-  const [pendingName, setPendingName] = useState("");
-  const debouncedName = useDebounce(pendingName, 600);
-
-  // ✅ KvK lookup met visuele status
-  useEffect(() => {
-    if (!debouncedName || debouncedName.trim().length < 3) {
-      setKvkStatus("idle");
-      setValues((prev) => ({
-        ...prev,
-        kvkNummer: "",
-        adres: "",
-        sector: "",
-        website: "",
-      }));
-      return;
-    }
-
-    async function lookup() {
-      setError("");
-      setKvkStatus("loading");
-      setKvkLoading(true);
+  async function lookup() {
+    setError("");
+    setKvkStatus("loading");
+    setKvkLoading(true);
 
     try {
-      const info = await getKvKData(debouncedName);
+      const info = await getCompanyDataByName(debouncedName);
 
-
-
-      // ✅ Controleer of er iets nuttigs is teruggekomen
+      // ❌ Geen resultaat
       if (!info || Object.keys(info).length === 0) {
         setKvkStatus("error");
-        setError("Geen KvK-gegevens gevonden voor deze bedrijfsnaam.");
+        setError("Geen bedrijfsgegevens gevonden.");
         setValues((prev) => ({
           ...prev,
           kvkNummer: "",
@@ -107,39 +99,40 @@ export default function Signup() {
         return;
       }
 
-      // ✅ Alles OK — status op success zetten
+      // ✅ Alles OK
       setKvkStatus("success");
 
       // Adres samenstellen
       let adres = "";
-      const a = info.address || {};
-      if (a.street || a.postalCode || a.city) {
-        adres = `${a.street || ""} ${a.houseNumber || ""}, ${a.postalCode || ""} ${a.city || ""}`.trim();
+      if (info.straat || info.postcode || info.plaats) {
+        adres = `${info.straat || ""} ${info.huisnummer || ""}, ${info.postcode || ""} ${info.plaats || ""}`.trim();
       }
 
       // Website normaliseren
       let website = info.website || "";
       if (website && !/^https?:\/\//i.test(website)) website = `https://${website}`;
 
-      // ✅ Waarden vullen
+      // ✅ Waarden invullen
       setValues((prev) => ({
         ...prev,
-        kvkNummer: info.kvkNumber || "",
+        kvkNummer: info.kvkNummer || "",
         adres,
-        sector: info.branch || "",
+        sector: info.sector || "",
         website,
       }));
     } catch (err) {
-      console.error("KvK lookup error:", err);
+      console.error("Bedrijfslookup error:", err);
       setKvkStatus("error");
-      setError("Fout bij ophalen KvK-gegevens.");
+      setError("Fout bij ophalen bedrijfsgegevens.");
     } finally {
       setKvkLoading(false);
     }
-    }
+  }
 
-    lookup();
-  }, [debouncedName]);
+  lookup();
+}, [debouncedName]);
+
+
 
   // ✅ Input-handler koppelen aan debounce
   const handleCompanyLookup = (e) => {
@@ -201,6 +194,22 @@ export default function Signup() {
       setErrors(errors);
       return;
     }
+    // ✅ JSON-payload voorbereiden conform backend
+    const payload = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      functieTitel: form.functieTitel,
+      bedrijfsnaam: form.bedrijfsnaam,
+      kvkNummer: form.kvkNummer,
+      adres: form.adres,
+      postcode: form.postcode,
+      huisnummer: form.huisnummer,
+      website: form.website,
+      sector: form.sector,
+    };
+
+    console.log("📦 JSON-payload:", payload);
 
     setLoading(true);
     try {
@@ -255,7 +264,8 @@ export default function Signup() {
           {kvkStatus === "error" && (
             <p className="text-sm text-red-600 mt-1">❌ Geen KvK-gegevens gevonden.</p>
           )}
-
+          {/* 🔹 Automatisch adres invullen via postcode + huisnummer */}
+      
           <Input label="KvK-nummer (auto)" name="kvkNummer" value={form.kvkNummer} readOnly />
           <Input label="Adres" name="adres" value={form.adres} readOnly />
           <Input
@@ -297,7 +307,7 @@ export default function Signup() {
             {loading ? "Even aanmaken..." : "Account aanmaken →"}
           </button>
 
-         <LegalLinks />
+         {/* <LegalLinks /> */}
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Heb je al een account?{" "}
