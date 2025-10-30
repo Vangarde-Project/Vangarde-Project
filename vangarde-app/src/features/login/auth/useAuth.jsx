@@ -1,165 +1,50 @@
-"use client";
-import React, { createContext, useContext, useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import * as authService from "../services/authService"; 
+// src/features/login/auth/useAuth.jsx
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import {
+  register as svcRegister,
+  login as svcLogin,
+  logout as svcLogout,
+  getCurrentUser,
+} from "../services/authService";
 
-// === Auth context ===
-const AuthContext = createContext(null);
+const AuthCtx = createContext(null);
 
 export function AuthProvider({ children }) {
-  const navigate = useNavigate();
-  const tokenRef = useRef(null);
-
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [flash, setFlash] = useState(null);
+  const [ready, setReady] = useState(false);
 
-  // Herstel sessie bij paginaverversing
+  // laad user uit localStorage bij start
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-      const storedToken = localStorage.getItem("token");
-      if (storedUser && storedToken) {
-        setUser(JSON.parse(storedUser));
-        tokenRef.current = storedToken;
-      }
-    } catch {
-      /* ignore */
-    }
+    const u = getCurrentUser();
+    if (u) setUser(u);
+    setReady(true);
   }, []);
 
-  const isLoggedIn = !!user;
+  const register = useCallback(async (formData) => {
+    // verwacht FormData van signup.jsx
+    const res = await svcRegister(formData);
+    // na registreren laten we user niet auto-inloggen; signup redirect naar /login
+    return res;
+  }, []);
 
-  // === LOGIN ===
-  async function login(email, password) {
-    setLoading(true);
-    setError(null);
+  const login = useCallback(async ({ email, password }) => {
+    const res = await svcLogin(email, password);
+    if (res.ok) setUser(res.user);
+    return res;
+  }, []);
 
-    try {
-      const result = await authService.login(email, password);
-      if (!result.ok) throw new Error(result.error || "Login mislukt.");
-
-      const loggedUser = result.user;
-      const fakeToken = "fake-jwt-token";
-
-      localStorage.setItem("user", JSON.stringify(loggedUser));
-      localStorage.setItem("token", fakeToken);
-      tokenRef.current = fakeToken;
-      setUser(loggedUser);
-
-      setFlash({ type: "success", text: "Je bent nu ingelogd!" });
-      setTimeout(() => setFlash(null), 3000);
-
-      navigate("/dashboard");
-      return { ok: true };
-    } catch (err) {
-      console.error("Login error:", err);
-      setError(err.message);
-      setUser(null);
-      return { ok: false, error: err.message };
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // === REGISTRATIE ===
-  async function register(formData) {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // JSON payload opbouwen conform backend
-      const payload = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        functieTitel: formData.functieTitel,
-        kvkNummer: formData.kvkNummer,
-        bedrijfsnaam: formData.bedrijfsnaam,
-        adres: formData.adres,
-        sector: formData.sector,
-      };
-
-      const result = await authService.registerUser(payload);
-      if (!result.ok) throw new Error(result.error || "Registratie mislukt.");
-
-      setFlash({ type: "success", text: "Account succesvol aangemaakt." });
-      setTimeout(() => setFlash(null), 3000);
-      return { ok: true };
-    } catch (err) {
-      console.error("Register failed:", err);
-      setError(err.message);
-      return { ok: false, error: err.message };
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // === SIGN IN VIA PROVIDER (mock) ===
-  async function signInWithProvider(providerName) {
-    setLoading(true);
-    try {
-      console.log(`Logging in with ${providerName}...`);
-      await new Promise((r) => setTimeout(r, 300));
-
-      const fakeToken = "fake-oauth-token";
-      const demoUser = {
-        name: "Demo User",
-        email: `demo+${providerName.toLowerCase()}@vangarde.ai`,
-        provider: providerName,
-      };
-
-      tokenRef.current = fakeToken;
-      localStorage.setItem("user", JSON.stringify(demoUser));
-      localStorage.setItem("token", fakeToken);
-      setUser(demoUser);
-
-      setFlash({ type: "success", text: `Ingelogd met ${providerName}` });
-      setTimeout(() => setFlash(null), 3000);
-
-      navigate("/dashboard");
-      return { ok: true };
-    } catch (err) {
-      console.error("Provider login failed:", err);
-      setError(err.message);
-      return { ok: false, error: err.message };
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // === LOGOUT ===
-  function logout() {
-    tokenRef.current = null;
+  const logout = useCallback(() => {
+    svcLogout();
     setUser(null);
-    setError(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+  }, []);
 
-    setFlash({ type: "info", text: "Je bent uitgelogd." });
-    setTimeout(() => setFlash(null), 3000);
-    navigate("/");
-  }
+  const value = useMemo(() => ({ user, ready, register, login, logout }), [user, ready, register, login, logout]);
 
-  // === Exporteer contextwaarden ===
-  const value = {
-    isLoggedIn,
-    user,
-    loading,
-    error,
-    flash,
-    login,
-    register,
-    logout,
-    signInWithProvider,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
-// Custom hook om context te gebruiken
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthCtx);
+  if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");
+  return ctx;
 }
