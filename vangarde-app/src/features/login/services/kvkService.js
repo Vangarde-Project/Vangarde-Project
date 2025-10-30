@@ -1,20 +1,13 @@
-export async function fetchCompanyData(query, mock = false) {
-  if (mock) {
-    if (query.toLowerCase().includes("onzin")) {
-      return { error: "Mock: geen KvK-gegevens gevonden." };
-    }
-    // Anders testdata teruggeven
-    return {
-      kvkNumber: "12345678",
-      name: "Vangarde B.V.",
-      address: {
-        street: "Innovatieweg",
-        houseNumber: "10",
-        postalCode: "1234AB",
-        city: "Utrecht",
-      },
-      branch: "IT Consultancy",
-      website: "www.jouwbedrijf.nl",
-    };
-  }
+export async function getCompanyDataByName(name) {
+  if (!name || name.trim().length < 3) return {};
+  // TODO: vervang dit met echte API-call
+  return {
+    kvkNummer: "12345678",
+    straat: "Damrak",
+    huisnummer: "1",
+    postcode: "1012LG",
+    plaats: "Amsterdam",
+    website: "vangarde.ai",
+    sector: "IT-dienstverlening",
+  };
 }
