@@ -1,51 +1,97 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginCard from "./features/login/components/ui/LoginCard";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+// 🔐 Auth & login
+import LoginCard from "./features/login/components/ui/LoginCard.jsx";
 import Signup from "./features/login/auth/signup.jsx";
-import Dashboard from "./pages/dashboard.jsx";
-import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
+import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
+
+// 🧩 App layouts & pages
+import DashboardLayout from "./features/login/components/layout/DashboardLayout.jsx";
+import Dashboard from "./pages/dashboard.jsx";
+
+// 🔧 Services
 import { fetchCompanyData } from "./features/login/services/kvkService.js";
 
+// ⬇️ Layout wrapper voor alle publieke pagina’s (login/signup)
+function AuthShell({ children }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      {children}
+    </div>
+  );
+}
+
 export default function App() {
+  // Test KvK (mock mode)
   useEffect(() => {
     async function testKvK() {
-      const data = await fetchCompanyData("69599084", true); // true = mock
+      const data = await fetchCompanyData("69599084", true);
       console.log("KVK RESULT:", data);
     }
     testKvK();
   }, []);
 
-
   return (
     <Router>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        {/* AuthProvider zorgt voor login/register functies en state */}
-        <AuthProvider>
-          <FlashMessage />
-          <Routes>
-            {/* Homepage -> login (public) */}
-            <Route path="/" element={<PublicRoute> <LoginCard /> </PublicRoute>} />
+      <AuthProvider>
+        {/* Globale notificaties */}
+        <FlashMessage />
 
-            {/* Login route (ook publiek) */}
-            <Route path="/login" element={<PublicRoute> <LoginCard /> </PublicRoute>} />
+        <Routes>
+          {/* --- 🔓 Publieke routes --- */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <AuthShell>
+                  <LoginCard />
+                </AuthShell>
+              </PublicRoute>
+            }
+          />
 
-            {/* Registratie pagina */}
-            <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <AuthShell>
+                  <LoginCard />
+                </AuthShell>
+              </PublicRoute>
+            }
+          />
 
-            {/* Dashboard (private) */}
-            <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <AuthShell>
+                  <Signup />
+                </AuthShell>
+              </PublicRoute>
+            }
+          />
 
-            {/* Fallback -> toon login */}
-            <Route path="*" element={<PublicRoute> <LoginCard /> </PublicRoute>} />
+          {/* --- 🔒 Beveiligde routes --- */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Dashboard />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
 
-          {/* <Route path="/terms-of-service" element={<TermsOfService />} /> */}
-          {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
-          </Routes>
-        </AuthProvider>
-      </div>
+          {/* --- ⛔ Catch-all --- */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }
