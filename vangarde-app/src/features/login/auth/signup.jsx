@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
+import LegalLinks from "../components/ui/LegalLinks";
+
+// ✅ correcte paden o.b.v. jouw mapstructuur
+import useForm from "../hooks/useForm";
+import useDebounce from "../hooks/useDebounce";
+import { getCompanyDataByName } from "../services/kvkService";
 import { useAuth } from "./useAuth";
-import { getCompanyDataByName } from "../services/authService";
-import { useDebounce } from "../hooks/useDebounce";
-
-
-
 
 // Icons
 const EyeIcon = ({ className = "w-5 h-5" }) => (
@@ -28,7 +28,13 @@ export default function Signup() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  const { values: form, handleChange, setValues, errors: fieldErrors, setErrors } = useForm({
+  const {
+    values: form,
+    handleChange,
+    setValues,
+    errors: fieldErrors,
+    setErrors,
+  } = useForm({
     firstName: "",
     lastName: "",
     email: "",
@@ -36,7 +42,7 @@ export default function Signup() {
     kvkNummer: "",
     bedrijfsnaam: "",
     adres: "",
-    website: "", // ✅ nieuw veld
+    website: "",
     sector: "",
     password: "",
     confirmPassword: "",
@@ -52,89 +58,62 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [kvkLoading, setKvkLoading] = useState(false);
 
-  const successBtnRef = useRef(null);
-  const lookupTimer = useRef(null);
+  // KvK lookup (optioneel) — velden blijven bewerkbaar
+  const [pendingName, setPendingName] = useState("");
+  const debouncedName = useDebounce(pendingName, 600);
 
-// ✅ KvK lookup op bedrijfsnaam met automatische invulling
-// 🧩 Nieuw: bedrijfsnaam live lookup + automatische invulling
-const [pendingName, setPendingName] = useState("");
-const debouncedName = useDebounce(pendingName, 600);
+  useEffect(() => {
+    if (!debouncedName || debouncedName.trim().length < 3) {
+      setKvkStatus("idle");
+      return;
+    }
 
-useEffect(() => {
-  if (!debouncedName || debouncedName.trim().length < 3) {
-    setKvkStatus("idle");
-    setValues((prev) => ({
-      ...prev,
-      kvkNummer: "",
-      adres: "",
-      sector: "",
-      website: "",
-    }));
-    return;
-  }
+    let cancelled = false;
+    (async () => {
+      try {
+        setError("");
+        setKvkStatus("loading");
 
-  async function lookup() {
-    setError("");
-    setKvkStatus("loading");
-    setKvkLoading(true);
+        const info = await getCompanyDataByName(debouncedName);
+        if (!info || Object.keys(info).length === 0) {
+          if (!cancelled) setKvkStatus("error");
+          return;
+        }
 
-    try {
-      const info = await getCompanyDataByName(debouncedName);
+        if (cancelled) return;
+        setKvkStatus("success");
 
-      // ❌ Geen resultaat
-      if (!info || Object.keys(info).length === 0) {
-        setKvkStatus("error");
-        setError("Geen bedrijfsgegevens gevonden.");
+        // Adres samenstellen
+        let adres = "";
+        if (info.straat || info.postcode || info.plaats) {
+          adres = `${info.straat || ""} ${info.huisnummer || ""}, ${info.postcode || ""} ${info.plaats || ""}`.trim();
+        }
+
+        // Website normaliseren
+        let website = info.website || "";
+        if (website && !/^https?:\/\//i.test(website)) website = `https://${website}`;
+
+        // Voorinvullen (maar bewerkbaar)
         setValues((prev) => ({
           ...prev,
-          kvkNummer: "",
-          adres: "",
-          sector: "",
-          website: "",
+          kvkNummer: info.kvkNummer || prev.kvkNummer,
+          adres: adres || prev.adres,
+          sector: info.sector || prev.sector,
+          website: website || prev.website,
         }));
-        return;
+      } catch (e) {
+        console.error("Bedrijfslookup error:", e);
+        if (!cancelled) setKvkStatus("error");
       }
+    })();
 
-      // ✅ Alles OK
-      setKvkStatus("success");
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedName, setValues]);
 
-      // Adres samenstellen
-      let adres = "";
-      if (info.straat || info.postcode || info.plaats) {
-        adres = `${info.straat || ""} ${info.huisnummer || ""}, ${info.postcode || ""} ${info.plaats || ""}`.trim();
-      }
-
-      // Website normaliseren
-      let website = info.website || "";
-      if (website && !/^https?:\/\//i.test(website)) website = `https://${website}`;
-
-      // ✅ Waarden invullen
-      setValues((prev) => ({
-        ...prev,
-        kvkNummer: info.kvkNummer || "",
-        adres,
-        sector: info.sector || "",
-        website,
-      }));
-    } catch (err) {
-      console.error("Bedrijfslookup error:", err);
-      setKvkStatus("error");
-      setError("Fout bij ophalen bedrijfsgegevens.");
-    } finally {
-      setKvkLoading(false);
-    }
-  }
-
-  lookup();
-}, [debouncedName]);
-
-
-
-  // ✅ Input-handler koppelen aan debounce
   const handleCompanyLookup = (e) => {
     handleChange(e);
     setPendingName(e.target.value);
@@ -144,7 +123,8 @@ useEffect(() => {
   const handleFileValidation = (file, setter, errorSetter, label, key) => {
     errorSetter("");
     if (!file) return;
-    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const isPdf =
+      file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
     if (!isPdf) {
       errorSetter(`${label} moet een PDF-bestand zijn.`);
       setter(null);
@@ -173,7 +153,13 @@ useEffect(() => {
   };
 
   const handleFunctieChange = (e) =>
-    handleFileValidation(e.target.files[0], setFunctieProfielFile, setFunctieError, "Functieprofiel", "functie");
+    handleFileValidation(
+      e.target.files[0],
+      setFunctieProfielFile,
+      setFunctieError,
+      "Functieprofiel",
+      "functie"
+    );
   const handleCvChange = (e) =>
     handleFileValidation(e.target.files[0], setCvFile, setCvError, "CV", "cv");
 
@@ -181,47 +167,32 @@ useEffect(() => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess(false);
     setErrors({});
+
     const errors = {};
-    if (!form.bedrijfsnaam || form.bedrijfsnaam.trim().length < 2) errors.bedrijfsnaam = "Vul een geldige bedrijfsnaam in.";
+    if (!form.bedrijfsnaam || form.bedrijfsnaam.trim().length < 2)
+      errors.bedrijfsnaam = "Vul een geldige bedrijfsnaam in.";
     if (!form.email) errors.email = "Vul je e-mailadres in.";
     if (!form.password) errors.password = "Vul je wachtwoord in.";
     if (!form.confirmPassword) errors.confirmPassword = "Bevestig je wachtwoord.";
-    if (form.password !== form.confirmPassword) errors.confirmPassword = "Wachtwoorden komen niet overeen.";
+    if (form.password !== form.confirmPassword)
+      errors.confirmPassword = "Wachtwoorden komen niet overeen.";
 
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       return;
     }
-    // ✅ JSON-payload voorbereiden conform backend
-    const payload = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      functieTitel: form.functieTitel,
-      bedrijfsnaam: form.bedrijfsnaam,
-      kvkNummer: form.kvkNummer,
-      adres: form.adres,
-      postcode: form.postcode,
-      huisnummer: form.huisnummer,
-      website: form.website,
-      sector: form.sector,
-    };
-
-    console.log("📦 JSON-payload:", payload);
 
     setLoading(true);
     try {
       const formData = new FormData();
-      Object.entries(form).forEach(([k, v]) => formData.append(k, v));
+      Object.entries(form).forEach(([k, v]) => formData.append(k, v ?? ""));
       if (functieProfielFile) formData.append("functieProfiel", functieProfielFile);
       if (cvFile) formData.append("cv", cvFile);
 
       const result = await register(formData);
       if (result.ok) {
-        setSuccess(true);
-        setTimeout(() => navigate("/login"), 1500);
+        navigate("/login");
       } else {
         setError(result.error || "Registratie mislukt.");
       }
@@ -245,38 +216,45 @@ useEffect(() => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-         <div>
-          <Input
-            label="Bedrijfsnaam"
-            name="bedrijfsnaam"
-            value={form.bedrijfsnaam}
-            onChange={handleCompanyLookup}
-            error={fieldErrors.bedrijfsnaam}
-          />
+          {/* Bedrijfsgegevens */}
+          <h3 className="text-base font-semibold text-gray-800">Bedrijfsgegevens</h3>
 
-          {/* ✅ Feedbackmelding onder veld */}
-          {kvkStatus === "loading" && (
-            <p className="text-sm text-blue-600 mt-1">🔄 Bedrijfsgegevens worden opgehaald...</p>
-          )}
-          {kvkStatus === "success" && (
-            <p className="text-sm text-green-600 mt-1">✅ Bedrijfsgegevens succesvol opgehaald!</p>
-          )}
-          {kvkStatus === "error" && (
-            <p className="text-sm text-red-600 mt-1">❌ Geen KvK-gegevens gevonden.</p>
-          )}
-          {/* 🔹 Automatisch adres invullen via postcode + huisnummer */}
-      
-          <Input label="KvK-nummer (auto)" name="kvkNummer" value={form.kvkNummer} readOnly />
-          <Input label="Adres" name="adres" value={form.adres} readOnly />
-          <Input
-            label="Bedrijfswebsite (URL)"
-            name="website"
-            value={form.website}
-            onChange={handleChange}
-            placeholder="https://www.jouwbedrijf.nl"
-          />
-          <Input label="Sector" name="sector" value={form.sector} readOnly />
-        </div>
+          <div>
+            <Input
+              label="Bedrijfsnaam"
+              name="bedrijfsnaam"
+              value={form.bedrijfsnaam}
+              onChange={handleCompanyLookup}
+              error={fieldErrors.bedrijfsnaam}
+            />
+
+            {kvkStatus === "loading" && (
+              <p className="text-sm text-blue-600 mt-1">
+                🔄 Bedrijfsgegevens worden opgehaald...
+              </p>
+            )}
+            {kvkStatus === "success" && (
+              <p className="text-sm text-green-600 mt-1">
+                ✅ Suggesties gevonden (velden zijn bewerkbaar).
+              </p>
+            )}
+            {kvkStatus === "error" && (
+              <p className="text-sm text-amber-600 mt-1">
+                Geen KvK-gegevens gevonden — vul handmatig in.
+              </p>
+            )}
+
+            <Input label="KvK-nummer" name="kvkNummer" value={form.kvkNummer} onChange={handleChange} />
+            <Input label="Adres" name="adres" value={form.adres} onChange={handleChange} />
+            <Input
+              label="Bedrijfswebsite (URL)"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              placeholder="https://www.jouwbedrijf.nl"
+            />
+            <Input label="Sector" name="sector" value={form.sector} onChange={handleChange} />
+          </div>
 
           {/* Persoonsgegevens */}
           <div>
@@ -289,8 +267,26 @@ useEffect(() => {
           {/* Documenten */}
           <div>
             <h3 className="text-base font-semibold text-gray-800 mb-3">Documenten toevoegen</h3>
-            <FileUpload label="Functieprofiel (PDF)" file={functieProfielFile} onChange={handleFunctieChange} error={functieError} progress={uploadProgress.functie} status={uploadStatus.functie} defaultText="Kies Functieprofiel" buttonClass={submitBtnClass} />
-            <FileUpload label="CV (PDF)" file={cvFile} onChange={handleCvChange} error={cvError} progress={uploadProgress.cv} status={uploadStatus.cv} defaultText="Kies CV" buttonClass={submitBtnClass} />
+            <FileUpload
+              label="Functieprofiel (PDF)"
+              file={functieProfielFile}
+              onChange={(e)=>handleFileValidation(e.target.files[0], setFunctieProfielFile, setFunctieError, "Functieprofiel", "functie")}
+              error={functieError}
+              progress={uploadProgress.functie}
+              status={uploadStatus.functie}
+              defaultText="Kies Functieprofiel"
+              buttonClass={submitBtnClass}
+            />
+            <FileUpload
+              label="CV (PDF)"
+              file={cvFile}
+              onChange={(e)=>handleFileValidation(e.target.files[0], setCvFile, setCvError, "CV", "cv")}
+              error={cvError}
+              progress={uploadProgress.cv}
+              status={uploadStatus.cv}
+              defaultText="Kies CV"
+              buttonClass={submitBtnClass}
+            />
           </div>
 
           {/* Inloggegevens */}
@@ -303,11 +299,15 @@ useEffect(() => {
 
           {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
 
-          <button type="submit" className={`${submitBtnClass} ${loading ? "opacity-70 cursor-wait" : ""}`}>
+          <button
+            type="submit"
+            className={`${submitBtnClass} ${loading ? "opacity-70 cursor-wait" : ""}`}
+            disabled={loading || uploadStatus.functie === "uploading" || uploadStatus.cv === "uploading"}
+          >
             {loading ? "Even aanmaken..." : "Account aanmaken →"}
           </button>
 
-         {/* <LegalLinks /> */}
+          <LegalLinks />
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Heb je al een account?{" "}
@@ -319,12 +319,10 @@ useEffect(() => {
 
         <div className="text-center text-xs text-gray-500 py-4 border-t">
           Problemen met registreren?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
-            Neem contact op
-          </a>
+          <a href="#" className="text-blue-600 hover:underline">Neem contact op</a>
         </div>
+      </div>
     </div>
-  </div>
   );
 }
 
@@ -373,7 +371,7 @@ function FileUpload({ label, file, onChange, error, progress, status, defaultTex
       {file && <p className="text-sm text-gray-600 mt-1 truncate">{file.name}</p>}
       {status === "uploading" && (
         <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-          <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+          <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>
       )}
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
