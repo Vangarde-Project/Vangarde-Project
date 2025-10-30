@@ -1,87 +1,97 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import LoginCard from "./features/login/components/ui/LoginCard";
+// 🔐 Auth & login
+import LoginCard from "./features/login/components/ui/LoginCard.jsx";
 import Signup from "./features/login/auth/signup.jsx";
-import Dashboard from "./pages/dashboard.jsx";
-import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
+import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
-// import { fetchCompanyData } from "./features/login/services/kvkService.js";
-import TermsOfService from "./pages/terms-of-service.jsx";
-import PrivacyPolicy from "./pages/privacy-policy.jsx";
-import { getCompanyDataByName } from "./features/login/services/kvkService.js";
+
+// 🧩 App layouts & pages
+import DashboardLayout from "./features/login/components/layout/DashboardLayout.jsx";
+import Dashboard from "./pages/dashboard.jsx";
+
+// 🔧 Services
+import { fetchCompanyData } from "./features/login/services/kvkService.js";
+
+// ⬇️ Layout wrapper voor alle publieke pagina’s (login/signup)
+function AuthShell({ children }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      {children}
+    </div>
+  );
+}
 
 export default function App() {
-  // 🔎 Kleine rooktest voor KvK-lookup (veilig om te verwijderen in productie)
+  // Test KvK (mock mode)
   useEffect(() => {
     async function testKvK() {
-      try {
-        const data = await getCompanyDataByName("Vangarde");
-        console.log("KVK RESULT:", data);
-      } catch (e) {
-        console.error("KVK test failed:", e);
-      }
+      const data = await fetchCompanyData("69599084", true);
+      console.log("KVK RESULT:", data);
     }
     testKvK();
   }, []);
 
   return (
     <Router>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        {/* AuthProvider zorgt voor login/register functies en state */}
-        <AuthProvider>
-          <FlashMessage />
-          <Routes>
-            {/* Homepage -> login (public) */}
-            <Route
-              path="/"
-              element={
-                <PublicRoute>
+      <AuthProvider>
+        {/* Globale notificaties */}
+        <FlashMessage />
+
+        <Routes>
+          {/* --- 🔓 Publieke routes --- */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <AuthShell>
                   <LoginCard />
-                </PublicRoute>
-              }
-            />
+                </AuthShell>
+              </PublicRoute>
+            }
+          />
 
-            {/* Login route (ook publiek) */}
-            <Route
-              path="/login"
-              element={
-                <PublicRoute>
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <AuthShell>
                   <LoginCard />
-                </PublicRoute>
-              }
-            />
+                </AuthShell>
+              </PublicRoute>
+            }
+          />
 
-            {/* Registratie pagina */}
-            <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <AuthShell>
+                  <Signup />
+                </AuthShell>
+              </PublicRoute>
+            }
+          />
 
-            {/* Dashboard (private) */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
+          {/* --- 🔒 Beveiligde routes --- */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
                   <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
 
-            {/* Fallback -> toon login */}
-            <Route
-              path="*"
-              element={
-                <PublicRoute>
-                  <LoginCard />
-                </PublicRoute>
-              }
-            />
-
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          </Routes>
-        </AuthProvider>
-      </div>
+          {/* --- ⛔ Catch-all --- */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }
