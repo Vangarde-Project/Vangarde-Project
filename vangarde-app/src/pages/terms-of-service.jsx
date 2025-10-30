@@ -56,7 +56,7 @@ const Sidebar = ({ sections, activeId, onJump }) => {
         <div className="h-full overflow-y-auto px-4 py-6">
           <div className="mb-3">
             <Kicker>Document navigatie</Kicker>
-            <h3 className="text-lg font-semibold text-slate-900">Privacybeleid</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Gebruiksvoorwaarden</h3>
           </div>
           <nav className="space-y-1">
             {sections.map((s) => {
@@ -103,27 +103,25 @@ const Sidebar = ({ sections, activeId, onJump }) => {
 };
 
 // sidebar navigation with active section highlighting
-export default function TermsOfService() {
-  const lastUpdated = "28 oktober 2025";
+export default function PrivacyPolicy() {
+  const lastUpdated = "28 Oktober 2025";
 
   const sections = useMemo(
     () => [
       { id: "inleiding", label: "1. Inleiding", icon: FileText },
-      { id: "contact", label: "2. Verwerkingsverantwoordelijke", icon: Mail },
-      { id: "categorieen", label: "3. Persoonsgegevens", icon: ListChecks },
-      { id: "doeleinden", label: "4. Doeleinden", icon: Cog },
-      { id: "rechtsgrond", label: "5. Rechtsgrond", icon: Gavel },
-      { id: "soevereiniteit", label: "6. Data-soevereiniteit", icon: Database },
-      { id: "functioneringsdata", label: "7. Functioneringsdata", icon: RefreshCcw },
-      { id: "ie", label: "8. Intellectueel eigendom", icon: ShieldCheck },
-      { id: "beveiliging", label: "9. Beveiliging", icon: Lock },
-      { id: "bewaartermijnen", label: "10. Bewaartermijnen", icon: CalendarClock },
-      { id: "delen", label: "11. Delen van gegevens", icon: Building2 },
-      { id: "rechten", label: "12. Rechten betrokkenen", icon: Info },
-      { id: "internationaal", label: "13. Internationale doorgifte", icon: Globe2 },
-      { id: "wijzigingen", label: "14. Wijzigingen", icon: CalendarClock },
-      { id: "contact-dpo", label: "15. Contact", icon: Mail },
-      { id: "bijlage-a", label: "Bijlage", icon: ListChecks },
+      { id: "wie-wij-zijn", label: "2. Wie wij zijn", icon: Building2 },
+      { id: "toepassingsgebied", label: "3. Toepassingsgebied", icon: Globe2 },
+      { id: "registratie-en-toegang", label: "4. Registratie en toegang", icon: Cog },
+      { id: "gebruik", label: "5. Gebruik van de Diensten", icon: ListChecks },
+      { id: "ie", label: "6. Intellectueel eigendom", icon: ShieldCheck },
+      { id: "betaald", label: "7. Betaalde diensten & abonnementen", icon: Database },
+      { id: "beeindiging", label: "8. Beëindiging en opschorting", icon: Lock },
+      { id: "beveiliging", label: "9. Beveiliging en beschikbaarheid", icon: RefreshCcw },
+      { id: "aansprakelijkheid", label: "10. Aansprakelijkheid en vrijwaring", icon: Gavel },
+      { id: "geschil", label: "11. Geschillenbeslechting", icon: Info },
+      { id: "wijzigingen", label: "12. Wijzigingen in de Voorwaarden", icon: CalendarClock },
+      { id: "contact", label: "13. Contact", icon: Mail },
+      { id: "samenvatting", label: "Kort samengevat", icon: CheckCircle2 },
     ],
     []
   );
@@ -152,6 +150,7 @@ export default function TermsOfService() {
   return (
     <main className="min-h-screen w-full bg-gradient-to-b from-slate-50 via-white to-slate-50 scroll-smooth">
       <Sidebar sections={sections} activeId={activeId} onJump={jumpTo} />
+
       <div className="lg:ml-72">
         {/* text above main content */}
         <div className="relative isolate">
@@ -164,14 +163,14 @@ export default function TermsOfService() {
           >
             <Kicker>Vangarde Intelligence Platform</Kicker>
             <h1 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 text-balance">
-              Privacybeleid – Vangarde Intelligence Platform
+              Gebruiksvoorwaarden – Vangarde Intelligence Platform (Europa)
             </h1>
             <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
               <Pill icon={Info} label="Versie" value="1.0" />
-              <Pill icon={CalendarClock} label="Datum" value="28 oktober 2025" />
+              <Pill icon={CalendarClock} label="Datum" value={lastUpdated} />
               <Pill icon={Building2} label="Verantwoordelijke" value="Vangarde B.V." />
-              <Pill icon={MapPin} label="Adres" value="[adres invullen]" />
-              <Pill icon={Mail} label="Contact" value="privacy@vangarde.ai" />
+              <Pill icon={MapPin} label="Regio" value="EU" />
+              <Pill icon={Mail} label="Contact" value="legal@vangarde.ai" />
             </div>
           </motion.header>
         </div>
@@ -180,292 +179,226 @@ export default function TermsOfService() {
       <div className="mx-auto max-w-4xl px-4 pb-16 pt-8">
         <article className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
           <div className="-mt-8 -mx-6 sm:-mx-8 mb-6 h-2 rounded-t-2xl bg-gradient-to-r from-indigo-500 to-violet-500" />
+
           <Section id="inleiding" title="1. Inleiding">
-            <p>
-              Vangarde B.V. (“Vangarde”, “wij”, “ons”) hecht grote waarde aan de bescherming van uw privacy. Dit privacybeleid legt uit hoe wij
-              persoonsgegevens verwerken binnen het Vangarde Intelligence Platform, welke keuzes u heeft en welke maatregelen wij nemen om uw gegevens
-              te beschermen.
+            <p className="text-gray-700">
+              Welkom bij Vangarde Intelligence. Deze Gebruiksvoorwaarden (“Voorwaarden”) regelen uw gebruik van het Vangarde Intelligence Platform
+              (“Platform”), inclusief alle bijbehorende software, AI-modules, integraties en webapplicaties (gezamenlijk “Diensten”).
+              Door u te registreren, in te loggen of gebruik te maken van onze Diensten, gaat u akkoord met deze Voorwaarden.
+              Lees dit document zorgvuldig door voordat u de Diensten gebruikt.
             </p>
-            <p>
-              Wij verwerken persoonsgegevens uitsluitend in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG), de
-              Uitvoeringswet AVG, de NIS2-richtlijn en de relevante bepalingen van de EU AI Act. Door gebruik te maken van onze diensten of door u te
-              registreren op onze website, gaat u akkoord met dit privacybeleid.
-            </p>
-          </Section>
-          
-          <Section id="contact" title="2. Verwerkingsverantwoordelijke en contact">
-            <p>De verwerkingsverantwoordelijke voor de verwerking van persoonsgegevens is:</p>
-            <BulletList
-              items={[
-                <span key="org">Vangarde B.V.</span>,
-                <span key="addr">📍 [adres invullen]</span>,
-                <span key="mail">📧 privacy@vangarde.ai</span>,
-              ]}
-            />
-            <p className="mt-4">
-              Wanneer Vangarde haar platform aanbiedt aan organisaties in SaaS-vorm, geldt dat de klant optreedt als verwerkingsverantwoordelijke en
-              Vangarde als verwerker in de zin van artikel 28 AVG. In dat geval wordt een afzonderlijke verwerkersovereenkomst gesloten.
+            <p className="text-gray-700">
+              Voor zakelijke implementaties gelden tevens de bepalingen van de Vangarde Zakelijke Voorwaarden en de Verwerkersovereenkomst, indien van toepassing.
+              Het Privacybeleid van Vangarde legt uit hoe wij persoonsgegevens verwerken. Hoewel het geen onderdeel vormt van deze Voorwaarden, is het juridisch bindend via verwijzing.
             </p>
           </Section>
 
-          <Section id="categorieen" title="3. Categorieën van persoonsgegevens">
-            <p>Afhankelijk van het gebruik van onze diensten verwerken wij de volgende categorieën persoonsgegevens:</p>
-            <div className="not-prose grid gap-4">
-              {[
-                ["Gebruikersgegevens", "Naam, e-mailadres, functieprofiel en organisatie. Doel: authenticatie, accountbeheer en toegangscontrole."],
-                ["Account- en systeemgegevens", "IP-adres, inlogmomenten, browser- of apparaatgegevens. Doel: beveiliging, foutanalyse en logging."],
-                ["Interactiegegevens", "Prompts, berichten en metadata van interacties met AI-assistenten. Doel: functionele dienstverlening en contextuele ondersteuning."],
-                ["Bedrijfscontext", "Procesinformatie, projectmetadata en rolbeschrijvingen. Doel: personalisatie binnen bedrijfsprocessen."],
-                ["Functioneringsdata (niet-inhoudelijk)", "Statistische en technische informatie over modelprestaties (zoals foutpatronen, tokenstromen en responslogica) uitsluitend voor systeemoptimalisatie. Deze gegevens bevatten geen persoonsgegevens of bedrijfsinhoud."]
-              ].map(([label, body]) => (
-                <div key={label} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <h3 className="mb-1 flex items-center gap-2 text-base font-semibold text-slate-900">
-                    <ListChecks className="h-5 w-5 text-indigo-600" /> {label}
-                  </h3>
-                  <p className="text-sm text-slate-700">{body}</p>
-                </div>
-              ))}
+          <Section id="wie-wij-zijn" title="2. Wie wij zijn">
+            <p className="text-gray-700">
+              De Diensten worden geleverd door:
+            </p>
+            <p className="text-gray-700">
+              Vangarde B.V., een besloten vennootschap naar Nederlands recht, statutair gevestigd te [adres invullen],
+              ingeschreven bij de Kamer van Koophandel onder nummer [KvK invullen].
+            </p>
+            <p className="text-gray-700">
+              Vangarde ontwikkelt en exploiteert AI-technologie met als doel organisaties in staat te stellen
+              besluitvorming, kennisbeheer en communicatie veilig te automatiseren, met volledige databeheersing binnen Europa.
+            </p>
+          </Section>
+
+          <Section id="toepassingsgebied" title="3. Toepassingsgebied">
+            <p className="text-gray-700">
+              Deze Voorwaarden zijn van toepassing op alle gebruikers in de Europese Economische Ruimte (EER), Zwitserland en het Verenigd Koninkrijk.
+              Voor gebruikers buiten deze regio’s geldt het document Vangarde Terms of Use – Global.
+            </p>
+          </Section>
+
+          <Section id="registratie-en-toegang" title="4. Registratie en toegang">
+            {/* 4.1 Minimumleeftijd */}
+            <h3 className="text-lg font-semibold text-slate-900">4.1 Minimumleeftijd</h3>
+            <p className="text-gray-700">
+              U moet ten minste 16 jaar oud zijn om een Vangarde-account aan te maken, of voldoen aan de minimumleeftijd voor digitale toestemming in uw land.
+              Indien u jonger bent dan 18 jaar, is toestemming van ouder of voogd vereist.
+            </p>
+
+            {/* 4.2 Accountregistratie */}
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">4.2 Accountregistratie</h3>
+            <p className="text-gray-700">
+              Bij registratie dient u correcte en volledige informatie te verstrekken. U bent verantwoordelijk voor alle activiteiten die plaatsvinden
+              onder uw account en dient uw inloggegevens vertrouwelijk te houden. Indien u handelt namens een organisatie, verklaart u daartoe bevoegd te zijn.
+            </p>
+
+            {/* 4.3 Bedrijfsdomeinen */}
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">4.3 Bedrijfsdomeinen</h3>
+            <p className="text-gray-700">
+              Wanneer u zich registreert met een e-mailadres dat eigendom is van een organisatie, kan het account worden toegevoegd aan het beheerde bedrijfsdomein.
+              In dat geval kan de organisatie beheerrechten uitoefenen, inclusief inzage in platformactiviteit binnen de bedrijfscontext.
+            </p>
+          </Section>
+
+          <Section id="gebruik" title="5. Gebruik van de Diensten">
+            {/* 5.1 Toegestaan gebruik */}
+            <h3 className="text-lg font-semibold text-slate-900">5.1 Toegestaan gebruik</h3>
+            <p className="text-gray-700">
+              Onder voorwaarde van naleving van deze Voorwaarden verleent Vangarde u een niet-exclusieve, niet-overdraagbare, herroepbare licentie om de Diensten te gebruiken
+              voor legitieme, rechtmatige doeleinden binnen de overeengekomen functionele context.
+            </p>
+
+            {/* 5.2 Verboden gebruik */}
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">5.2 Verboden gebruik</h3>
+            <div className="mt-2">
+              <p className="text-gray-700">U mag de Diensten niet gebruiken voor:</p>
+              <BulletList
+                items={[
+                  <span key="v1">illegale of frauduleuze doeleinden;</span>,
+                  <span key="v2">schending van rechten van derden (inclusief intellectuele eigendom);</span>,
+                  <span key="v3">reverse engineering, decompilatie of pogingen om de modelarchitectuur of broncode te achterhalen;</span>,
+                  <span key="v4">automatisch of programmatisch extraheren van data of AI-output;</span>,
+                  <span key="v5">het trainen van concurrerende AI-modellen;</span>,
+                  <span key="v6">verstoring van systemen of beveiligingsmechanismen;</span>,
+                  <span key="v7">verspreiding van schadelijke of discriminerende inhoud.</span>,
+                ]}
+              />
+              <p className="mt-3 text-gray-700">
+                Vangarde behoudt zich het recht voor accounts tijdelijk of permanent te beperken bij overtreding.
+              </p>
             </div>
           </Section>
 
-          <Section id="doeleinden" title="4. Doeleinden van verwerking">
-            <p>Wij verwerken persoonsgegevens uitsluitend voor de volgende doeleinden:</p>
+          <Section id="ie" title="6. Intellectueel eigendom">
+            <h3 className="text-lg font-semibold text-slate-900">6.1 Eigendom</h3>
+            <p className="text-gray-700">
+              Alle rechten, titels en belangen in de Diensten, AI-modellen, algoritmen, architecturen, en systeemdocumentatie blijven exclusief eigendom van Vangarde B.V..
+              Gebruik van de Diensten verleent geen eigendomsaanspraak.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">6.2 Inhoud van de gebruiker</h3>
+            <p className="text-gray-700">
+              U behoudt alle rechten op gegevens, documenten, prompts en uploads die u inbrengt (“Gebruikersinhoud”).
+              Vangarde verkrijgt enkel een niet-exclusieve licentie om deze inhoud te verwerken ten behoeve van de overeengekomen dienstverlening.
+              Gebruikersinhoud wordt nooit gebruikt om modellen te trainen of commerciële datasets te verrijken.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">6.3 Functioneringsdata</h3>
+            <p className="text-gray-700">
+              Vangarde mag anonieme functioneringsdata gebruiken voor analyse, onderhoud en modeloptimalisatie, mits zonder herleidbaarheid
+              tot natuurlijke personen of bedrijfsinhoud.
+            </p>
+          </Section>
+
+          <Section id="betaald" title="7. Betaalde diensten en abonnementen">
+            <h3 className="text-lg font-semibold text-slate-900">7.1 Tarieven en betaling</h3>
+            <p className="text-gray-700">
+              Abonnementen en licenties worden vooraf gefactureerd conform overeengekomen tarieven. Alle bedragen zijn exclusief btw tenzij anders vermeld.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">7.2 Facturering en verlenging</h3>
+            <p className="text-gray-700">
+              Betalingen worden uitgevoerd via beveiligde betaalmethoden. Abonnementen worden automatisch verlengd tenzij tijdig opgezegd via de accountinstellingen.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">7.3 Opzegging</h3>
+            <p className="text-gray-700">
+              Gebruikers kunnen hun abonnement op elk moment beëindigen. Na opzegging blijft toegang beschikbaar tot het einde van de lopende facturatieperiode.
+              Er vindt geen terugbetaling plaats tenzij wettelijk vereist (bijv. consumentenrechtelijke herroeping binnen 14 dagen).
+            </p>
+          </Section>
+
+          <Section id="beeindiging" title="8. Beëindiging en opschorting">
+            <p className="text-gray-700">Vangarde kan uw toegang beperken, opschorten of beëindigen indien:</p>
             <BulletList
               items={[
-                "Het aanbieden, onderhouden en beveiligen van het Vangarde-platform.",
-                "Het beheren van gebruikersaccounts en toegangsrechten.",
-                "Het analyseren en verbeteren van de prestaties van het platform en de onderliggende modellen.",
-                "Het uitvoeren van wettelijke verplichtingen en nalevingscontroles.",
-                "Het informeren van gebruikers over technische of veiligheidsgerelateerde zaken.",
+                <span key="b1">u deze Voorwaarden of toepasselijke wetgeving schendt;</span>,
+                <span key="b2">u de beveiliging van het platform in gevaar brengt;</span>,
+                <span key="b3">of wettelijke verplichtingen hiertoe nopen.</span>,
               ]}
             />
-            <p className="mt-4">Wij gebruiken geen persoonsgegevens voor commerciële profilering, marketing of geautomatiseerde besluitvorming zonder menselijke tussenkomst.</p>
-          </Section>
-
-          <Section id="rechtsgrond" title="5. Rechtsgrond voor verwerking">
-            <p>De verwerking van persoonsgegevens door Vangarde vindt plaats op basis van:</p>
-            <BulletList
-              items={[
-                "Uitvoering van de overeenkomst – voor levering van onze diensten en beheer van accounts.",
-                "Wettelijke verplichting – voor audit- en beveiligingsdoeleinden.",
-                "Gerechtvaardigd belang – voor systeemoptimalisatie, foutdetectie en beveiligingsverbeteringen.",
-                "Toestemming – wanneer specifieke aanvullende functionaliteiten dit vereisen.",
-              ]}
-            />
-            <p className="mt-4">Bij verwerking op grond van een gerechtvaardigd belang voert Vangarde altijd een belangenafweging uit tussen bedrijfsbelang en privacybelang van betrokkenen.</p>
-          </Section>
-
-          <Section id="soevereiniteit" title="6. Bedrijfsdata en data-soevereiniteit">
-            <p>
-              Alle inhoudelijke bedrijfsdata die via het Vangarde-platform worden verwerkt, blijven volledig eigendom van de klant. Deze data worden opgeslagen en verwerkt binnen de infrastructuur die de klant beheert, on-premise of in een private cloud binnen de Europese Economische Ruimte (EER). Vangarde heeft geen toegang tot bedrijfsinhoud, tenzij dit strikt noodzakelijk is voor technische ondersteuning en alleen op expliciet verzoek van de klant.
+            <p className="mt-3 text-gray-700">
+              In geval van beëindiging ontvangt u, waar mogelijk, vooraf bericht en gelegenheid om gegevens te exporteren.
             </p>
           </Section>
 
-          <Section id="functioneringsdata" title="7. Functioneringsdata en modeloptimalisatie">
-            <p>
-              Vangarde verzamelt uitsluitend niet-inhoudelijke functioneringsdata om haar AI-systemen te verbeteren. Deze gegevens beschrijven hoe modellen functioneren, niet wát zij verwerken. Alle functioneringsdata worden vooraf geanonimiseerd en bevatten geen persoonsgegevens of bedrijfsinformatie. De verwerking van deze data vindt plaats op basis van het gerechtvaardigd belang van Vangarde overeenkomstig artikel 6 lid 1 sub f AVG, met toepassing van passende technische en organisatorische beveiligingsmaatregelen.
-            </p>
-          </Section>
-
-          <Section id="ie" title="8. Intellectueel eigendom">
-            <p>
-              Alle algoritmen, AI-modellen, architecturen, gewichten, trainingsprocedures en afgeleide inzichten blijven het exclusieve intellectuele eigendom van Vangarde B.V. Gebruikers behouden het eigendom van hun eigen bedrijfsgegevens en ingevoerde content. Door gebruik te maken van het platform verleent de gebruiker aan Vangarde een niet-exclusieve, wereldwijde licentie om geanonimiseerde interactie- en functioneringsdata te gebruiken voor onderhoud, beveiliging en prestatieverbetering van het platform. Er worden geen inhoudelijke klantgegevens gebruikt voor modeltraining.
-            </p>
-          </Section>
-
-          <Section id="beveiliging" title="9. Beveiliging van gegevens">
-            <p>Vangarde past een Zero Trust-beveiligingsarchitectuur toe met maatregelen op enterprise-niveau, waaronder:</p>
-            <BulletList
-              items={[
-                "End-to-end encryptie (TLS 1.3 en AES-256).",
-                "Multi-factor authenticatie (MFA) en rolgebaseerde toegang (RBAC).",
-                "Beveiligde opslag in containers (Kubernetes, HashiCorp Vault).",
-                "Onwijzigbare logging via blockchain (Hyperledger Fabric).",
-                "Continue monitoring via Prometheus en Grafana.",
-                "Jaarlijkse penetratietests en interne audits volgens ISO 27001 en NIS2.",
-              ]}
-            />
-            <p className="mt-4">Alle toegang tot persoonsgegevens is strikt beperkt tot geautoriseerde medewerkers onder geheimhoudingsplicht.</p>
-          </Section>
-
-          <Section id="bewaartermijnen" title="10. Bewaartermijnen">
-            <p>
-              Vangarde bewaart persoonsgegevens niet langer dan noodzakelijk voor het doel waarvoor ze zijn verzameld.
-            </p>
-            {/* mobile view */}
-            <div className="not-prose mt-3 md:hidden overflow-hidden rounded-xl border border-slate-200 divide-y divide-slate-200">
-              <div className="p-4">
-                <p className="text-sm font-medium text-slate-700">Operationele logs</p>
-                <p className="text-sm text-slate-700">
-                  <span className="font-semibold">Bewaartermijn: </span>max. 90 dagen
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-semibold">Toelichting: </span>Tenzij langere wettelijke verplichting geldt
-                </p>
-              </div>
-              <div className="p-4">
-                <p className="text-sm font-medium text-slate-700">Gebruikersdata</p>
-                <p className="text-sm text-slate-700">
-                  <span className="font-semibold">Bewaartermijn: </span>Zolang account actief is of wettelijk vereist
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-semibold">Toelichting: </span>Accountbeheer &amp; naleving
-                </p>
-              </div>
-              <div className="p-4">
-                <p className="text-sm font-medium text-slate-700">Functioneringsdata</p>
-                <p className="text-sm text-slate-700">
-                  <span className="font-semibold">Bewaartermijn: </span>Onbepaalde tijd (geanonimiseerd)
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-semibold">Toelichting: </span>Uitsluitend voor systeemoptimalisatie
-                </p>
-              </div>
-              <div className="p-4">
-                <p className="text-sm font-medium text-slate-700">Ondersteuningsverzoeken</p>
-                <p className="text-sm text-slate-700">
-                  <span className="font-semibold">Bewaartermijn: </span>max. 1 jaar
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-semibold">Toelichting: </span>Kwaliteitsborging
-                </p>
-              </div>
-            </div>
-
-            {/* Desktop*/}
-            <div className="not-prose mt-3 hidden md:block overflow-hidden rounded-xl border border-slate-200">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-left text-slate-600">
-                  <tr>
-                    <th className="px-4 py-2">Type gegevens</th>
-                    <th className="px-4 py-2">Bewaartermijn</th>
-                    <th className="px-4 py-2">Toelichting</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">Operationele logs</td>
-                    <td className="px-4 py-2">max. 90 dagen</td>
-                    <td className="px-4 py-2">Tenzij langere wettelijke verplichting geldt</td>
-                  </tr>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">Gebruikersdata</td>
-                    <td className="px-4 py-2">Zolang account actief is of wettelijk vereist</td>
-                    <td className="px-4 py-2">Accountbeheer &amp; naleving</td>
-                  </tr>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">Functioneringsdata</td>
-                    <td className="px-4 py-2">Onbepaalde tijd (geanonimiseerd)</td>
-                    <td className="px-4 py-2">Uitsluitend voor systeemoptimalisatie</td>
-                  </tr>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">Ondersteuningsverzoeken</td>
-                    <td className="px-4 py-2">max. 1 jaar</td>
-                    <td className="px-4 py-2">Kwaliteitsborging</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <p className="mt-4">Na afloop van de bewaartermijn worden gegevens verwijderd of onomkeerbaar geanonimiseerd.</p>
-          </Section>
-
-          <Section id="delen" title="11. Delen van gegevens">
-            <p>
-              Vangarde verkoopt geen persoonsgegevens aan derden. Gegevens worden uitsluitend gedeeld:
+          <Section id="beveiliging" title="9. Beveiliging en beschikbaarheid">
+            <p className="text-gray-700">
+              Vangarde waarborgt een Zero Trust-architectuur en voldoet aan de normen van ISO 27001, NIS2 en de AI Act.
+              Hoewel maximale zorg wordt betracht, kan Vangarde niet aansprakelijk worden gesteld voor schade veroorzaakt door:
             </p>
             <BulletList
               items={[
-                "Met zorgvuldig geselecteerde subverwerkers voor hosting, beveiliging of onderhoud, onder strikte verwerkersovereenkomsten.",
-                "Met bevoegde autoriteiten indien dit wettelijk verplicht is.",
-                "Met de klant zelf, binnen de overeengekomen beheeromgeving.",
+                <span key="s1">cyberaanvallen buiten haar invloedssfeer;</span>,
+                <span key="s2">onderbreking van diensten door derden;</span>,
+                <span key="s3">of overmachtssituaties.</span>,
               ]}
             />
-            <p className="mt-4">
-              Alle gegevensverwerking vindt plaats binnen de EU/EER of onder de voorwaarden van de Europese Standard Contractual Clauses (2021/914/EU).
+          </Section>
+
+          <Section id="aansprakelijkheid" title="10. Aansprakelijkheid en vrijwaring">
+            <h3 className="text-lg font-semibold text-slate-900">10.1 Beperking van aansprakelijkheid</h3>
+            <p className="text-gray-700">
+              Voor zover wettelijk toegestaan, is de totale aansprakelijkheid van Vangarde beperkt tot het bedrag dat u in de voorafgaande twaalf maanden
+              hebt betaald voor de betreffende Dienst, of €500, afhankelijk van welk bedrag hoger is. Vangarde is niet aansprakelijk voor indirecte, incidentele
+              of gevolgschade, inclusief verlies van winst of gegevens.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">10.2 Vrijwaring</h3>
+            <p className="text-gray-700">
+              Gebruikers vrijwaren Vangarde tegen claims van derden die voortvloeien uit onrechtmatig gebruik van de Diensten of schending van deze Voorwaarden.
             </p>
           </Section>
 
-          <Section id="rechten" title="12. Rechten van betrokkenen">
-            <p>Gebruikers hebben de volgende rechten onder de AVG:</p>
-            <BulletList
-              items={[
-                "Recht op inzage in de verwerkte gegevens.",
-                "Recht op correctie of verwijdering.",
-                "Recht op beperking van verwerking.",
-                "Recht op overdraagbaarheid van gegevens.",
-                "Recht op bezwaar tegen verwerking.",
-                "Recht op menselijke tussenkomst bij geautomatiseerde besluitvorming.",
-              ]}
-            />
-            <p className="mt-4">
-              Verzoeken kunnen worden ingediend via{" "}
+          <Section id="geschil" title="11. Geschillenbeslechting">
+            <h3 className="text-lg font-semibold text-slate-900">11.1 Toepasselijk recht</h3>
+            <p className="text-gray-700">
+              Op deze Voorwaarden is uitsluitend het Nederlands recht van toepassing, onverminderd dwingendrechtelijke consumentenbescherming binnen de EU/EER.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">11.2 Bevoegde rechter</h3>
+            <p className="text-gray-700">
+              Geschillen worden voorgelegd aan de bevoegde rechter te Amsterdam (Nederland), tenzij dwingend recht anders bepaalt.
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-slate-900">11.3 Alternatieve geschillenbeslechting</h3>
+            <p className="text-gray-700">
+              Consumenten binnen de EU kunnen geschillen ook voorleggen via het Onlinegeschillenbeslechtingsplatform (ODR) van de Europese Commissie:{" "}
               <a
-                href="mailto:privacy@vangarde.ai"
-                className="font-medium text-slate-900 underline decoration-violet-400/60 underline-offset-[3px] hover:decoration-violet-500"
-              >
-                privacy@vangarde.ai
-              </a>
-              . Vangarde behandelt elk verzoek binnen 30 dagen. Bij geschillen kunt u een klacht indienen bij de Autoriteit Persoonsgegevens via{" "}
-              <a
-                href="https://www.autoriteitpersoonsgegevens.nl"
+                href="https://consumer-redress.ec.europa.eu/site-relocation_en"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium text-slate-900 underline decoration-violet-400/60 underline-offset-[3px] hover:decoration-violet-500"
               >
-                www.autoriteitpersoonsgegevens.nl
+                Site relocation
               </a>
-              .
             </p>
           </Section>
 
-          <Section id="internationaal" title="13. Internationale doorgifte">
-            <p>
-              Alle persoonsgegevens worden standaard verwerkt binnen de Europese Economische Ruimte (EER). Indien doorgifte naar derde landen noodzakelijk is, past Vangarde uitsluitend landen toe met een door de Europese Commissie vastgesteld adequaatheidsbesluit, of gebruikt zij de Standard Contractual Clauses (SCC 2021/914/EU) met aanvullende beveiligingsmaatregelen.
-            </p>
-          </Section>
-
-          <Section id="wijzigingen" title="14. Wijzigingen in dit beleid">
-            <p>
-              Vangarde behoudt zich het recht voor om dit privacybeleid te actualiseren in geval van wijzigingen in wetgeving, technologie of dienstverlening. De meest recente versie is altijd beschikbaar via <span className="font-medium">www.vangarde.ai/privacy</span>. Wij adviseren gebruikers om dit beleid regelmatig te raadplegen.
-            </p>
-          </Section>
-
-          <Section id="contact-dpo" title="15. Contact">
-            <p>
-              Voor vragen, verzoeken of klachten over dit privacybeleid kunt u contact opnemen met onze Data Protection Officer (DPO):
-            </p>
+          <Section id="wijzigingen" title="12. Wijzigingen in de Voorwaarden">
+            <p className="text-gray-700">Vangarde kan deze Voorwaarden wijzigen wegens:</p>
             <BulletList
               items={[
-                "E-mail: privacy@vangarde.ai",
-                "Adres: [bedrijfsadres invullen]",
-                "Reactietermijn: maximaal 30 dagen",
+                <span key="w1">wetswijzigingen of juridische vereisten;</span>,
+                <span key="w2">beveiligings- of technische noodzaak;</span>,
+                <span key="w3">nieuwe functionaliteiten of Diensten.</span>,
+              ]}
+            />
+            <p className="mt-3 text-gray-700">
+              Bij wezenlijke wijzigingen wordt u minimaal 30 dagen vooraf geïnformeerd. Indien u niet akkoord gaat, kunt u het gebruik van de Diensten beëindigen.
+            </p>
+          </Section>
+
+          <Section id="contact" title="13. Contact">
+            <BulletList
+              items={[
+                <span key="c1">Vangarde B.V. – Legal Department</span>,
+                <span key="c2">📧 legal@vangarde.ai</span>,
+                <span key="c3">📍 [bedrijfsadres invullen]</span>,
               ]}
             />
           </Section>
 
-          <Section id="bijlage-a" title="Bijlage A – Technische en organisatorische beveiligingsmaatregelen">
+          <Section id="samenvatting" title="Kort samengevat:">
             <BulletList
               items={[
-                "Zero Trust Network Architecture (ZTA).",
-                "End-to-end encryptie (TLS 1.3 / AES-256).",
-                "Multi-factor authenticatie (MFA).",
-                "HashiCorp Vault voor geheime opslag.",
-                "Immutable blockchain-logging (Hyperledger Fabric).",
-                "Volledige on-premise of private cloud implementatie voor enterprise-klanten.",
-                "Continue monitoring (SIEM, Prometheus, Grafana).",
-                "Jaarlijkse onafhankelijke beveiligingsaudits conform ISO 27001 en SOC 2 Type II.",
-                "NIS2-incidentmanagement binnen 24 uur meldingsplicht.",
+                <span key="k1">Uw data blijft van u; onze modellen blijven van ons.</span>,
+                <span key="k2">Wij leveren veilige, conforme en controleerbare AI-diensten.</span>,
+                <span key="k3">U behoudt transparantie, exporteerbaarheid en keuzevrijheid.</span>,
+                <span key="k4">Wij handelen onder Europees recht en volledige AVG-conformiteit.</span>,
               ]}
             />
           </Section>
-
-          <div className="my-8 rounded-xl border border-indigo-200/60 bg-indigo-50 p-5">
-            <h3 className="mb-1 text-lg font-semibold text-indigo-900">Samenvattend</h3>
-            <p className="text-sm text-indigo-900/90">
-              Bij Vangarde blijven uw bedrijfsgegevens in uw eigen beheer en infrastructuur. Vangarde gebruikt enkel geanonimiseerde functioneringsdata om haar modellen veiliger, nauwkeuriger en betrouwbaarder te maken. Wij verbinden technologische innovatie aan juridische integriteit en waarborgen maximale datasoevereiniteit voor onze klanten.
-            </p>
-          </div>
 
           <div className="mt-8 border-t border-slate-200 pt-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-slate-600 gap-2">

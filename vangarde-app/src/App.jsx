@@ -8,7 +8,7 @@ import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
-import { fetchCompanyData } from "./features/login/services/kvkService.js";
+// import { fetchCompanyData } from "./features/login/services/kvkService.js";
 import TermsOfService from "./pages/terms-of-service.jsx";
 import PrivacyPolicy from "./pages/privacy-policy.jsx";
 import { getCompanyDataByName } from "./features/login/services/kvkService.js";

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import LegalLinks from "../components/ui/LegalLinks";
 
 // ✅ correcte paden o.b.v. jouw mapstructuur
 import useForm from "../hooks/useForm";
@@ -305,6 +306,8 @@ export default function Signup() {
           >
             {loading ? "Even aanmaken..." : "Account aanmaken →"}
           </button>
+
+          <LegalLinks />
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Heb je al een account?{" "}
