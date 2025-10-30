@@ -8,10 +8,9 @@ import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
-
-// ✅ Gebruik de juiste exportnaam uit kvkService
-// Let op: pad laten staan zoals in jouw projectstructuur.
-// Heb jij services direct onder /src staan? Gebruik dan: "./services/kvkService.js"
+import { fetchCompanyData } from "./features/login/services/kvkService.js";
+import TermsOfService from "./pages/terms-of-service.jsx";
+import PrivacyPolicy from "./pages/privacy-policy.jsx";
 import { getCompanyDataByName } from "./features/login/services/kvkService.js";
 
 export default function App() {
@@ -78,10 +77,8 @@ export default function App() {
               }
             />
 
-            {/* Extra routes (later inschakelen)
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            */}
           </Routes>
         </AuthProvider>
       </div>
