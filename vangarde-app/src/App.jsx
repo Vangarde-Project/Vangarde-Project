@@ -14,7 +14,7 @@ import DashboardLayout from "./features/login/components/layout/DashboardLayout.
 import Dashboard from "./pages/dashboard.jsx";
 
 // 🔧 Services
-import { fetchCompanyData } from "./features/login/services/kvkService.js";
+import { getCompanyDataByName } from "./features/login/services/kvkService";
 
 // ⬇️ Layout wrapper voor alle publieke pagina’s (login/signup)
 function AuthShell({ children }) {

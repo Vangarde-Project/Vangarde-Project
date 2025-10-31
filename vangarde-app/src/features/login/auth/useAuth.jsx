@@ -23,7 +23,20 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (formData) => {
     // verwacht FormData van signup.jsx
     const res = await svcRegister(formData);
-    // na registreren laten we user niet auto-inloggen; signup redirect naar /login
+    // Als registratie succesvol is, probeer direct in te loggen met dezelfde credentials
+    if (res.ok) {
+      try {
+        const email = (formData.get("email") || "").trim().toLowerCase();
+        const password = formData.get("password") || "";
+        const loginRes = await svcLogin(email, password);
+        if (loginRes.ok) {
+          setUser(loginRes.user);
+        }
+      } catch (e) {
+        // silent — registratie is gelukt, auto-login is optioneel
+        console.warn("Auto-login na registratie mislukt:", e);
+      }
+    }
     return res;
   }, []);
 

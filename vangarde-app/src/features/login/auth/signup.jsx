@@ -192,7 +192,8 @@ export default function Signup() {
 
       const result = await register(formData);
       if (result.ok) {
-        navigate("/login");
+        // useAuth.register probeert auto-login; navigeer direct naar dashboard
+        navigate("/dashboard");
       } else {
         setError(result.error || "Registratie mislukt.");
       }
@@ -268,23 +269,23 @@ export default function Signup() {
           <div>
             <h3 className="text-base font-semibold text-gray-800 mb-3">Documenten toevoegen</h3>
             <FileUpload
-              label="Functieprofiel (PDF)"
+              label="Upload Functieprofiel"
               file={functieProfielFile}
               onChange={(e)=>handleFileValidation(e.target.files[0], setFunctieProfielFile, setFunctieError, "Functieprofiel", "functie")}
               error={functieError}
               progress={uploadProgress.functie}
               status={uploadStatus.functie}
-              defaultText="Kies Functieprofiel"
+              defaultText="Upload"
               buttonClass={submitBtnClass}
             />
             <FileUpload
-              label="CV (PDF)"
+              label="Upload CV"
               file={cvFile}
               onChange={(e)=>handleFileValidation(e.target.files[0], setCvFile, setCvError, "CV", "cv")}
               error={cvError}
               progress={uploadProgress.cv}
               status={uploadStatus.cv}
-              defaultText="Kies CV"
+              defaultText="Upload"
               buttonClass={submitBtnClass}
             />
           </div>
@@ -363,7 +364,7 @@ function FileUpload({ label, file, onChange, error, progress, status, defaultTex
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <label className="block text-sm font-medium text-black mb-2">{label}</label>
       <button type="button" onClick={() => inputRef.current?.click()} className={`${buttonClass} w-full`}>
         {defaultText}
       </button>
