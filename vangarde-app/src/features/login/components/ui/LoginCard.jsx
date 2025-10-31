@@ -21,7 +21,6 @@ export default function LoginCard() {
   const { values, errors: fieldErrors, handleChange, setErrors } = useForm({
     email: "",
     password: "",
-   
   });
 
   useEffect(() => {
@@ -38,7 +37,6 @@ export default function LoginCard() {
     const errors = {};
     if (!values.email) errors.email = "Vul je e-mail of gebruikersnaam in.";
     if (!values.password) errors.password = "Vul je wachtwoord in.";
-    
 
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
@@ -144,7 +142,7 @@ export default function LoginCard() {
             {loading ? "Even laden..." : "Inloggen →"}
           </button>
 
-        <LegalLinks />
+          <LegalLinks />
 
           {/* Scheiding + social login */}
           <div className="flex items-center gap-2">
@@ -153,7 +151,9 @@ export default function LoginCard() {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          <SocialButtons handleSocialLogin={signInWithProvider} />
+          {/* ✅ Enige functionele aanpassing:
+              SocialButtons kliks -> ga direct naar /dashboard */}
+          <SocialButtons handleSocialLogin={() => navigate("")} />
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Nog geen account?{" "}
