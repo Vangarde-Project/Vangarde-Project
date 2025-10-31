@@ -1,9 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../features/login/auth/useAuth.jsx";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const name = user?.name || "Gebruiker";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="space-y-6">
@@ -25,6 +32,12 @@ export default function Dashboard() {
               className="inline-flex items-center justify-center rounded-xl px-4 py-2 border text-[#5B2FFF] bg-[#F7F4FF] hover:bg-[#F0E9FF]"
             >
               Bekijk bestanden
+            </button>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center rounded-xl px-4 py-2 border text-red-600 bg-red-50 hover:bg-red-100"
+            >
+              Uitloggen
             </button>
           </div>
         </div>

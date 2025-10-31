@@ -46,9 +46,9 @@ export default function LoginCard() {
       return;
     }
 
-    setLoading(true);
-    const result = await login(values.email, values.password);
-    setLoading(false);
+  setLoading(true);
+  const result = await login({ email: values.email, password: values.password });
+  setLoading(false);
 
     if (result.ok) {
       navigate("/dashboard");

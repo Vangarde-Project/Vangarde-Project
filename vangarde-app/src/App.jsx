@@ -8,6 +8,8 @@ import PublicRoute from "./features/login/auth/PublicRoute.jsx";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute.jsx";
 import { AuthProvider } from "./features/login/auth/useAuth.jsx";
 import FlashMessage from "./features/login/components/ui/FlashMessage.jsx";
+import TermsOfService from "./pages/terms-of-service.jsx";
+import PrivacyPolicy from "./pages/privacy-policy.jsx";
 
 // 🧩 App layouts & pages
 import DashboardLayout from "./features/login/components/layout/DashboardLayout.jsx";
@@ -28,9 +30,14 @@ function AuthShell({ children }) {
 export default function App() {
   // Test KvK (mock mode)
   useEffect(() => {
+    // small dev/test helper — use the imported service instead of an undefined function
     async function testKvK() {
-      const data = await fetchCompanyData("69599084", true);
-      console.log("KVK RESULT:", data);
+      try {
+        const data = await getCompanyDataByName("69599084", true);
+        console.log("KVK RESULT:", data);
+      } catch (err) {
+        console.warn("KVK test failed:", err);
+      }
     }
     testKvK();
   }, []);
@@ -87,6 +94,9 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
           {/* --- ⛔ Catch-all --- */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

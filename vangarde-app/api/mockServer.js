@@ -1,23 +1,4 @@
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  console.log("🧠 Received login:", email, password);
-
-  if (
-    (email === "test@vangarde.nl" || email === "test@vangarde.ai") &&
-    password === "1234"
-  ) {
-    return res.json({
-      success: true,
-      token: "mock-jwt-token-1234",
-      user: {
-        name: "Test Gebruiker",
-        role: "HR-analist",
-        email,
-      },
-    });
-  }
-
-  return res
-    .status(401)
-    .json({ success: false, message: "Ongeldige inloggegevens" });
-});
+// Mock server removed — authentication is now handled client-side with hardcoded credentials.
+// This file remains to avoid accidental runtime errors if someone runs `npm run mock`.
+console.log("api/mockServer.js: mock server removed. Use client-side auth. Exiting.");
+process.exit(0);
