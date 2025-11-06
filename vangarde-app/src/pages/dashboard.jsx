@@ -7,84 +7,124 @@ import {
   FileText,
   FileSpreadsheet,
   FileBarChart2,
+  Check,
+  Users,            
 } from "lucide-react";
 
 export default function Dashboard() {
   return (
     <div className="xl:flex gap-6 items-start">
       {/* MAIN */}
-      <main className="flex-1 min-w-0 space-y-6">
-        {/* Topbar (search + user preview) */}
-        <div className="hidden xl:flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1">
-            <div className="rounded-xl border bg-white px-3 py-2">
-              <div className="text-[11px] text-gray-500 leading-tight">Welkom terug,</div>
-              <div className="text-sm font-medium">Gebruiker</div>
-            </div>
-            <div className="relative flex-1 max-w-xl">
-              <input
-                className="w-full rounded-xl border pl-9 pr-3 py-2.5 bg-white"
-                placeholder="Wat moet ik nu doen?"
-              />
-              <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            </div>
-          </div>
-          <div className="text-xs text-gray-500">Focus mode</div>
-        </div>
-
+      <main className="flex-1 min-w-0 space-y-6" >
         {/* Hero card */}
-        <section className="rounded-2xl border bg-white shadow-sm p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs">
-                <span className="inline-flex rounded-full px-2 py-0.5 font-semibold bg-red-50 text-red-700">
-                  URGENT
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-gray-50 text-gray-700">
-                  <AlarmClock className="h-3 w-3" /> Deadline: Vandaag 17:00
-                </span>
-              </div>
-              <h2 className="text-lg font-semibold">Salarisverhoging evaluatie Q4</h2>
-              <p className="text-gray-600 max-w-xl">
-                Analyseer performance data en stel verhogingspercentages voor 24 medewerkers voor.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                aria-disabled
-                className="pointer-events-none inline-flex items-center gap-2 rounded-xl px-4 py-2 text-white bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] shadow-sm"
-              >
-                <Play className="h-4 w-4" /> Start nu
-              </button>
-              <span className="inline-flex items-center rounded-xl px-4 py-2 border text-gray-700">
-                Bekijk openstaande taken
+     <section className="rounded-2xl border border-red-200/60 bg-rose-50 shadow-sm p-5 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="inline-flex rounded-full px-2 py-0.5 font-semibold bg-rose-100 text-rose-700">
+                URGENT
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-gray-100 text-gray-700">
+                <AlarmClock className="h-3 w-3" aria-hidden="true" />
+                Deadline: Vandaag 17:00
               </span>
             </div>
+
+            <h2 className="text-lg font-semibold text-gray-900">
+              Salarisverhoging evaluatie Q4
+            </h2>
+
+            <p className="text-gray-600 max-w-xl">
+              Analyseer performance data en stel verhogingspercentages voor 24 medewerkers voor.
+            </p>
           </div>
-        </section>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-white bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] shadow-sm hover:from-[#295fe5] hover:to-[#6a1be0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
+            >
+              <Play className="h-4 w-4" aria-hidden="true" />
+              Start nu
+            </button>
+
+            <button
+              className="inline-flex items-center rounded-xl px-4 py-2 border border-blue-700 text-blue-700 hover:bg-gray-50"
+            >
+              Bekijk openstaande taken
+            </button>
+          </div>
+        </div>
+      </section>
+
 
         {/* HR Dashboard – Vandaag */}
-        <div className="text-sm font-semibold">HR Dashboard · Vandaag</div>
+        <h2 className="text-2xl font-bold">HR Dashboard – Vandaag</h2>
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Kaart 1 */}
-          <div className="rounded-2xl border bg-white shadow-sm p-4">
-            <div className="text-sm text-gray-500">Taken afgerond</div>
-            <div className="mt-2 h-5 w-24 rounded bg-gray-100"></div>
-            <div className="mt-3 h-2 w-full rounded-full bg-gray-100"></div>
-            <div className="mt-2 text-[11px] text-gray-500">—</div>
+          {/* Kaart 1  taken*/}
+          <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4 w-56">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
+                <Check className="h-5 w-5 text-emerald-500" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-500">Taken afgerond</div>
+                <div className="text-xl font-semibold text-emerald-600">6/8</div>
+              </div>
+            </div>
+
+            <div className="mt-3 h-2 w-full rounded-full bg-gray-100">
+              <div
+                className="h-2 rounded-full bg-emerald-500"
+                style={{ width: '75%' }}
+              ></div>
+            </div>
+
+            <div className="mt-2 text-[11px] text-gray-500">
+              75% voltooid – uitstekend tempo!
+            </div>
           </div>
-          {/* Kaart 2 */}
-          <div className="rounded-2xl border bg-white shadow-sm p-4">
-            <div className="text-sm text-gray-500">Open contacten</div>
-            <div className="mt-2 h-5 w-24 rounded bg-gray-100"></div>
-            <div className="mt-2 text-[11px] text-[#5B2FFF]">bekijk details →</div>
-          </div>
-          {/* Kaart 3 */}
-          <div className="rounded-2xl border bg-white shadow-sm p-4">
-            <div className="text-sm text-gray-500">Recruitment pijplijn</div>
-            <div className="mt-2 h-5 w-24 rounded bg-gray-100"></div>
-            <div className="mt-2 text-[11px] text-emerald-600">—</div>
-          </div>
+          {/* Kaart 2  contracten */}
+            <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4 w-56">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                  <FileText className="h-5 w-5 text-orange-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500">Open contracten</div>
+                  <div className="text-xl font-semibold text-orange-600">12</div>
+                </div>
+              </div>
+
+              <div className="mt-2 flex items-center gap-1 text-[11px] text-gray-500">
+                <span className="inline-block h-2 w-2 rounded-full bg-rose-400"></span>
+                3 verlopen deze week
+              </div>
+
+              <div className="mt-2 text-[11px] font-medium text-orange-600 hover:underline cursor-pointer">
+                Bekijk details →
+              </div>
+            </div>
+          {/* Kaart 3  recruitment*/}
+            <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4 w-56">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
+                  <Users className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500">Recruitment pipeline</div>
+                  <div className="text-xl font-semibold text-indigo-600">8</div>
+                </div>
+              </div>
+
+              <div className="mt-2 flex items-center gap-1 text-[11px] text-gray-500">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400"></span>
+                2 interviews vandaag
+              </div>
+
+              <div className="mt-2 text-[11px] font-medium text-indigo-600 hover:underline cursor-pointer">
+                Open pipeline →
+              </div>
+            </div>
         </section>
 
         {/* Prioriteit · Taken */}
