@@ -1,7 +1,5 @@
 import { AlarmClock, Play, FileText, FileSpreadsheet, FileBarChart2, Check, Users, EllipsisVertical, Eye } from "lucide-react";
 import NotificationSidebar from "../features/login/components/layout/NotificationSidebar.jsx";
-
-
 export default function DashboardMiddle() {
   return (
     <main className="flex-1 min-w-0 space-y-6">
