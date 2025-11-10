@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function initialsFrom(name = "Gebruiker") {
   return name
     .split(" ")
+    .filter(Boolean)
     .map((s) => s[0])
     .slice(0, 2)
     .join("")
@@ -16,7 +17,6 @@ export default function Header({ onMenu }) {
   const navigate = useNavigate();
 
   const name = user?.name || "Gebruiker";
-  const role = user?.role || "Member";
 
   const handleLogout = () => {
     logout();
@@ -24,62 +24,102 @@ export default function Header({ onMenu }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b shadow-sm">
-      <div className="flex items-center justify-between px-6 h-16">
-        {/* Linkerzijde: logo of menuknop */}
+    <header className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur">
+      <div className="h-16 px-4 sm:px-6 flex items-center gap-4 justify-between">
+        {/* === LEFT: logo en subtitel === */}
         <div className="flex items-center gap-3">
+          {/* Mobiele menu-knop */}
           <button
             onClick={onMenu}
-            className="md:hidden text-gray-600 hover:text-gray-900"
+            className="md:hidden -ml-1 p-2 rounded text-gray-600 hover:bg-gray-100"
+            aria-label="Menu openen"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
               className="w-6 h-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M3.75 5.25h16.5m-16.5 6h16.5m-16.5 6h16.5"
+                d="M3.75 5.25h16.5M3.75 12h16.5M3.75 18.75h16.5"
               />
             </svg>
           </button>
 
-          <h1 className="text-lg font-semibold text-gray-800 tracking-tight">
-            Vangarde Intelligence
-          </h1>
-        </div>
-
-        {/* Rechterzijde: user info + logout */}
-        <div className="flex items-center gap-4">
-          {/* Gebruikersinfo */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] text-white font-semibold shadow-sm">
-              {initialsFrom(name)}
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] text-white font-semibold">
+              VI
             </div>
-            <div>
-              <div className="text-sm font-medium text-gray-800 truncate max-w-[140px]">
-                {name}
+            <div className="leading-tight">
+              <div className="text-sm sm:text-base font-semibold text-gray-800">
+                Vangarde Intelligence
               </div>
-              <div className="text-xs text-gray-500">{role}</div>
+              <div className="text-[11px] text-gray-500 -mt-0.5">
+                AI as a colleague — not a tool
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Uitloggen */}
+        {/* === CENTER: zoekbalk === */}
+        <div className="flex-1 flex justify-center px-4">
+          <div className="w-full max-w-xl">
+            <div className="relative">
+              <input
+                id="global-search"
+                type="text"
+                placeholder="Wat moet ik nu doen?"
+                className="w-full h-10 pl-3 pr-10 rounded-full border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
+              />
+              <button
+                className="absolute right-1 top-1.5 h-7 w-7 rounded-full bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] text-white flex items-center justify-center"
+                aria-label="Verstuur"
+              >
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M22 2L11 13" />
+                  <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* === RIGHT: avatar + uitlogknop === */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-semibold text-gray-700">
+                {initialsFrom(name)}
+              </span>
+            )}
+          </div>
+
+          {/* Zichtbare uitlogknop */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] hover:shadow-md transition-all"
+            className="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] hover:shadow-md transition-all"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
               className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
             >
               <path
                 strokeLinecap="round"
