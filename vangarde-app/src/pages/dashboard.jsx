@@ -1,10 +1,41 @@
-import { AlarmClock, Play, FileText, FileSpreadsheet, FileBarChart2, Check, Users, EllipsisVertical, Eye } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import {
+  AlarmClock,
+  Play,
+  FileText,
+  Check,
+  Users,
+  Eye,
+  File,
+  ExternalLink,
+  Cloud,
+  UserPlus,
+  CheckCircle2,
+  Bell,
+} from "lucide-react";
+
 import NotificationSidebar from "../features/login/components/layout/NotificationSidebar.jsx";
+
 export default function DashboardMiddle() {
+  const [notifOpen, setNotifOpen] = useState(false);
+
   return (
     <main className="flex-1 min-w-0 space-y-6">
-      {/* HERO CARD */}
-      <section className="rounded-2xl border border-red-200/60 bg-rose-50 shadow-sm p-5 sm:p-6">
+      {/* Knop om meldingen te openen */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setNotifOpen(true)}
+          className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 bg-gray-900 text-white hover:bg-black/90"
+        >
+          <Bell className="h-4 w-4" />
+          Meldingen
+        </button>
+      </div>
+
+      {/* HERO CARD (→ rode hover) */}
+      <section className="rounded-2xl border border-red-200/60 bg-rose-50 shadow-sm p-5 sm:p-6 transition-colors hover:bg-rose-100 hover:border-rose-300">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -42,8 +73,8 @@ export default function DashboardMiddle() {
       {/* HR Dashboard – Vandaag */}
       <h2 className="text-2xl font-bold">HR Dashboard – Vandaag</h2>
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Kaart 1 – Taken afgerond */}
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4">
+        {/* Kaart 1 – Taken afgerond (neutraal) */}
+        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4 transition-colors hover:bg-gray-50 hover:border-gray-200">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
               <Check className="h-5 w-5 text-emerald-500" />
@@ -61,8 +92,8 @@ export default function DashboardMiddle() {
           <div className="mt-2 text-[11px] text-gray-500">75% voltooid – uitstekend tempo!</div>
         </div>
 
-        {/* Kaart 2 – Open contracten */}
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4">
+        {/* Kaart 2 – Open contracten (neutraal) */}
+        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4 transition-colors hover:bg-gray-50 hover:border-gray-200">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
               <FileText className="h-5 w-5 text-orange-500" />
@@ -83,8 +114,8 @@ export default function DashboardMiddle() {
           </div>
         </div>
 
-        {/* Kaart 3 – Recruitment */}
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4">
+        {/* Kaart 3 – Recruitment (neutraal) */}
+        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4 transition-colors hover:bg-gray-50 hover:border-gray-200">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
               <Users className="h-5 w-5 text-indigo-600" />
@@ -113,8 +144,8 @@ export default function DashboardMiddle() {
           <button className="text-sm font-medium text-blue-700 hover:underline">Alle taken bekijken →</button>
         </div>
 
-        {/* Kaart 1 – BELANGRIJK */}
-        <article className="relative rounded-2xl border border-orange-100 bg-white shadow-sm p-4">
+        {/* BELANGRIJK (→ oranje hover) */}
+        <article className="relative rounded-2xl border border-orange-100 bg-white shadow-sm p-4 transition-colors hover:bg-orange-50 hover:border-orange-300">
           <span className="pointer-events-none absolute left-0 top-3 bottom-3 w-1.5 rounded-full bg-orange-400" />
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
@@ -132,8 +163,8 @@ export default function DashboardMiddle() {
           </div>
         </article>
 
-        {/* Kaart 2 – NORMAAL */}
-        <article className="relative rounded-2xl border border-emerald-100 bg-white shadow-sm p-4">
+        {/* NORMAAL (→ groene hover) */}
+        <article className="relative rounded-2xl border border-emerald-100 bg-white shadow-sm p-4 transition-colors hover:bg-emerald-50 hover:border-emerald-300">
           <span className="pointer-events-none absolute left-0 top-3 bottom-3 w-1.5 rounded-full bg-emerald-400" />
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
@@ -151,8 +182,8 @@ export default function DashboardMiddle() {
           </div>
         </article>
 
-        {/* Kaart 3 – IN UITVOERING */}
-        <article className="relative rounded-2xl border border-purple-200 bg-white shadow-sm p-4">
+        {/* IN UITVOERING (→ paarse hover) */}
+        <article className="relative rounded-2xl border border-purple-200 bg-white shadow-sm p-4 transition-colors hover:bg-purple-50 hover:border-purple-300">
           <span className="pointer-events-none absolute left-0 top-3 bottom-3 w-1.5 rounded-full bg-[#7A21FF]" />
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 w-full">
@@ -176,41 +207,94 @@ export default function DashboardMiddle() {
           </div>
         </article>
 
-        {/* Snelle acties */}
-        <div className="rounded-2xl border bg-white shadow-sm p-4">
-          <div className="text-sm text-gray-700 font-medium mb-3">Snelle acties voor HR taken</div>
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <button className="inline-flex items-center rounded-lg px-3 py-1.5 bg-[#EEF2FF] text-[#1E3A8A] font-medium hover:bg-[#E0E7FF] transition">👤 Nieuwe werknemer</button>
-            <button className="inline-flex items-center rounded-lg px-3 py-1.5 bg-[#F0E9FF] text-[#5B2FFF] font-medium hover:bg-[#E6DEFF] transition">📄 Contract opstellen</button>
-            <button className="inline-flex items-center rounded-lg px-3 py-1.5 bg-emerald-50 text-emerald-700 font-medium hover:bg-emerald-100 transition">✅ Performance review</button>
-          </div>
-        </div>
-      </section>
-
-      {/* Recente Bestanden */}
-      <section className="rounded-2xl border bg-white shadow-sm">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold">lorum ipsum</h3>
-          <span className="text-sm text-[#5B2FFF]">lorum ipsum</span>
-        </div>
-        <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          {[
-            { name: "Salarisverhoging_Q4.docx", icon: FileText },
-            { name: "Vergadernotulen_DA.xlsx", icon: FileSpreadsheet },
-            { name: "Feedback_Update.docx", icon: FileText },
-            { name: "Q4_Review.pptx", icon: FileBarChart2 },
-            { name: "Employee_Data.csv", icon: FileSpreadsheet },
-            { name: "Recruitment.csv", icon: FileSpreadsheet },
-          ].map((f, i) => (
-            <div key={i} className="group rounded-xl border p-3 bg-white">
-              <div className="flex items-center gap-2">
-                <f.icon className="h-4 w-4 text-gray-600" />
-                <span className="text-xs text-gray-700 truncate">{f.name}</span>
-              </div>
-              <div className="mt-1 text-[10px] text-gray-500">—</div>
+        <section className="space-y-6">
+          {/* Snelle acties (neutraal) */}
+          <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-4 transition-colors hover:bg-gray-50 hover:border-gray-300">
+            <div className="text-sm text-gray-700 font-medium mb-3">
+              Snelle acties voor HR taken
             </div>
-          ))}
-        </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <button className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 transition">
+                <UserPlus className="h-4 w-4" />
+                Nieuwe werknemer
+              </button>
+
+              <button className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 bg-[#5B2FFF] text-white font-medium hover:bg-[#4A1DE0] transition">
+                <FileText className="h-4 w-4" />
+                Contract opstellen
+              </button>
+
+              <button className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition">
+                <CheckCircle2 className="h-4 w-4" />
+                Performance review
+              </button>
+            </div>
+          </div>
+
+          {/* Recente Bestanden (neutraal) */}
+          <section className="rounded-2xl bg-white shadow-md border border-gray-100 transition-colors hover:bg-gray-50 hover:border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <h3 className="font-semibold text-gray-900">Recente Bestanden</h3>
+              <span className="text-sm text-[#5B2FFF] font-medium hover:underline cursor-pointer">
+                Alle bestanden →
+              </span>
+            </div>
+
+            <div className="p-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              {[
+                { name: "Salarisverhoging_Q4.pdf", time: "23 min geleden", ext: "pdf" },
+                { name: "Tevredenheid_Data.xlsx", time: "2u geleden", ext: "xlsx" },
+                { name: "Beleid_Update.docx", time: "4u geleden", ext: "docx" },
+                { name: "Q4_Review.pptx", time: "1 dag geleden", ext: "pptx" },
+                { name: "Employee_Data.csv", time: "2 dagen geleden", ext: "csv" },
+              ].map((f, i) => {
+                const style = {
+                  pdf:  { bg: "bg-red-50",     text: "text-red-600",     ring: "ring-red-100" },
+                  xlsx: { bg: "bg-emerald-50", text: "text-emerald-600", ring: "ring-emerald-100" },
+                  docx: { bg: "bg-blue-50",    text: "text-blue-600",    ring: "ring-blue-100" },
+                  pptx: { bg: "bg-orange-50",  text: "text-orange-600",  ring: "ring-orange-100" },
+                  csv:  { bg: "bg-purple-50",  text: "text-purple-600",  ring: "ring-purple-100" },
+                }[f.ext];
+
+                return (
+                  <div
+                    key={i}
+                    className="group rounded-xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition"
+                  >
+                    {/* bovenste rij */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className={`inline-flex h-8 w-8 items-center justify-center rounded-md ring-1 ${style.ring} ${style.bg} ${style.text}`}>
+                          <File className="h-4 w-4" />
+                        </span>
+                        <span className="text-sm font-medium text-gray-900 truncate">
+                          {f.name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition"
+                          aria-label="Openen"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </button>
+                        <button
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition"
+                          aria-label="Opslaan in cloud"
+                        >
+                          <Cloud className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="mt-2 text-xs text-gray-500">{f.time}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </section>
       </section>
     </main>
   );

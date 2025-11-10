@@ -1,42 +1,46 @@
+"use client";
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import NotificationSidebar from "./NotificationSidebar.jsx";
 
 export default function DashboardLayout({ rightAside, children }) {
-  // Mobiel slide-in
+  // Linker navigatie (mobiel) en inklappen (desktop)
   const [open, setOpen] = useState(false);
-  // Desktop inklappen/uitklappen
   const [collapsed, setCollapsed] = useState(false);
 
   // Content-offset op basis van sidebarbreedte
   const contentOffset = collapsed ? "lg:pl-16" : "lg:pl-72";
 
+  // Enige (inline) meldingenkolom
+  const asideNode = rightAside ?? <NotificationSidebar variant="inline" />;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-[#F6F7FF]">
-      {/* Sidebar met inklap/uitklap + mobiel open/close */}
+      {/* Linker navigatie */}
       <Sidebar
         open={open}
         onClose={() => setOpen(false)}
         collapsed={collapsed}
-        onToggle={() => setCollapsed(v => !v)}
+        onToggle={() => setCollapsed((v) => !v)}
       />
 
-      {/* Content wrapper schuift mee met sidebarbreedte */}
+      {/* Content schuift mee met linker sidebar */}
       <div className={contentOffset}>
-        {/* Header: onMenu opent de sidebar op mobiel */}
+        {/* Header: menu-knop voor mobiel */}
         <Header onMenu={() => setOpen(true)} />
 
         <main className="px-4 py-6">
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
-            <section className="space-y-6">{children}</section>
+          {/* Midden smaller + sidebar rechts */}
+          <div className="mx-auto max-w-[1600px] flex items-start gap-10">
+            <section className="flex-1 max-w-[1100px] mx-auto space-y-6">
+              {children}
+            </section>
 
-            {rightAside && (
-              <aside className="hidden xl:block">
-                <div className="rounded-2xl border bg-white shadow-sm p-4">
-                  {rightAside}
-                </div>
-              </aside>
-            )}
+            {/* Rechterkolom (enige sidebar) */}
+            <aside className="hidden xl:block sticky top-20 w-[360px]">
+              {asideNode}
+            </aside>
           </div>
         </main>
       </div>

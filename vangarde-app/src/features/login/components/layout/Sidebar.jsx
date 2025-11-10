@@ -25,12 +25,13 @@ const NAV_ITEMS = [
 
 function Sidebar({ open, onClose, collapsed, onToggle }) {
   const { pathname } = useLocation();
-  const baseWidth = collapsed ? "w-12" : "w-52";
-  const labelHidden = collapsed ? "hidden" : "";
-  const itemPad = collapsed ? "px-2" : "px-3";
+
+  const baseWidth = collapsed ? "w-14" : "w-56";
+  const showLabels = !collapsed;
 
   return (
     <>
+      {/* Backdrop alleen mobiel */}
       <div
         aria-hidden
         className={`fixed inset-0 bg-black/30 lg:hidden transition-opacity ${
@@ -40,20 +41,30 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 ${baseWidth} bg-white border-r flex flex-col justify-between
-                    transition-[transform,width] duration-200 lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        className={[
+          "fixed inset-y-0 left-0 z-40 bg-white border-r flex flex-col",
+          "transition-[transform,width] duration-200",
+          baseWidth,
+          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+        ].join(" ")}
       >
-        <div className="flex flex-col gap-6 p-3">
-          <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"}`}>
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF]" />
+        {/* TOP: Branding + Navigatie (met padding) */}
+        <div className="p-3">
+          <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} mb-4`}>
+            {/* Gradient logo gelijk aan header */}
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] text-white font-semibold">
+              VI
+            </div>
+
             {!collapsed && (
               <div className="leading-tight">
-                <div className="font-semibold text-sm">Vangarde</div>
-                <div className="text-[10px] text-gray-500">Intelligence</div>
+                <div className="font-semibold text-sm text-gray-800">Vangarde Intelligence</div>
+                <div className="text-[10px] text-gray-500 -mt-0.5">AI as a colleague — not a tool</div>
               </div>
             )}
           </div>
 
+          {/* Navigatie */}
           <nav className="space-y-1">
             {NAV_ITEMS.map(({ label, href, icon }) => {
               const active = pathname === href;
@@ -62,12 +73,12 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
                   key={href}
                   to={href}
                   onClick={onClose}
+                  title={collapsed ? label : undefined}
                   className={[
                     "group flex items-center rounded-xl py-2 transition",
-                    itemPad,
+                    collapsed ? "px-2" : "px-3",
                     active ? "bg-[#F0E9FF] text-[#5B2FFF] font-medium" : "hover:bg-gray-50 text-gray-700",
                   ].join(" ")}
-                  title={collapsed ? label : undefined}
                 >
                   <span
                     className={[
@@ -78,43 +89,66 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
                   >
                     {icon}
                   </span>
-                  {!collapsed && <span>{label}</span>}
+                  {showLabels && <span>{label}</span>}
                 </Link>
               );
             })}
           </nav>
         </div>
 
-        {/* Quick Actions */}
-        <div className={`mt-auto border-t pt-3 px-3 pb-5 ${labelHidden ? "hidden" : "block"}`}>
-          <div className="text-[10px] uppercase tracking-wide text-gray-400 mb-2">Quick actions</div>
-          <div className="space-y-2 text-[12px]">
-            <Link to="/tasks/new" onClick={onClose} className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-0.5 px-1.5">
-              <span className="grid place-items-center h-4.5 w-4.5 rounded-full text-white bg-[#6D4AFF]"><Plus className="h-2.5 w-2.5" /></span>
-              <span>Nieuwe Taak</span>
-            </Link>
-            <Link to="/documents/new" onClick={onClose} className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-0.5 px-1.5">
-              <span className="grid place-items-center h-4.5 w-4.5 rounded-full text-white bg-[#9B5CFF]"><FilePlus2 className="h-2.5 w-2.5" /></span>
-              <span>Document Maken</span>
-            </Link>
-            <Link to="/analytics" onClick={onClose} className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-0.5 px-1.5">
-              <span className="grid place-items-center h-4.5 w-4.5 rounded-full text-white bg-[#50C878]"><BarChart3 className="h-2.5 w-2.5" /></span>
-              <span>Data Analyse</span>
-            </Link>
-          </div>
-        </div>
+        {/* BOTTOM: Quick Actions + Toggle */}
+        <div className="mt-auto">
+          {showLabels && (
+            <div className="border-t px-3 pt-3 pb-2">
+              <div className="text-[10px] uppercase tracking-wide text-gray-400 mb-2">
+                Quick actions
+              </div>
+              <div className="space-y-2 text-[12px]">
+                <Link
+                  to="/tasks/new"
+                  onClick={onClose}
+                  className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-1 px-2"
+                >
+                  <span className="grid place-items-center h-[18px] w-[18px] rounded-full text-white bg-[#6D4AFF]">
+                    <Plus className="h-3 w-3" />
+                  </span>
+                  <span>Nieuwe Taak</span>
+                </Link>
+                <Link
+                  to="/documents/new"
+                  onClick={onClose}
+                  className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-1 px-2"
+                >
+                  <span className="grid place-items-center h-[18px] w-[18px] rounded-full text-white bg-[#9B5CFF]">
+                    <FilePlus2 className="h-3 w-3" />
+                  </span>
+                  <span>Document Maken</span>
+                </Link>
+                <Link
+                  to="/analytics"
+                  onClick={onClose}
+                  className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-1 px-2"
+                >
+                  <span className="grid place-items-center h-[18px] w-[18px] rounded-full text-white bg-[#50C878]">
+                    <BarChart3 className="h-3 w-3" />
+                  </span>
+                  <span>Data Analyse</span>
+                </Link>
+              </div>
+            </div>
+          )}
 
-        {/* Onderste rand + pijl */}
-        <div className="border-t py-3 flex items-center justify-center mt-1">
-          <button
-            type="button"
-            onClick={onToggle}
-            className="h-7 w-7 rounded-full border bg-white hover:bg-gray-50 text-gray-600 flex items-center justify-center"
-            aria-label={collapsed ? "Zijbalk uitklappen" : "Zijbalk inklappen"}
-            title={collapsed ? "Uitklappen" : "Inklappen"}
-          >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </button>
+          <div className="border-t px-3 py-3 flex items-center justify-center">
+            <button
+              type="button"
+              onClick={onToggle}
+              className="h-7 w-7 rounded-full border bg-white hover:bg-gray-50 text-gray-600 flex items-center justify-center"
+              aria-label={collapsed ? "Zijbalk uitklappen" : "Zijbalk inklappen"}
+              title={collapsed ? "Uitklappen" : "Inklappen"}
+            >
+              {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
       </aside>
     </>
