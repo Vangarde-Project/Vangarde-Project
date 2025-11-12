@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "mock": "node api/mockServer.js",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "next build",
+    "preview": "vite preview",
+    "start": "next start"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
@@ -16,14 +17,17 @@
     "express": "^5.1.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
+    "next": "^16.0.1",
+    "next-auth": "^4.24.13",
     "prop-types": "^15.8.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
     "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
@@ -32,6 +36,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
+    "typescript": "5.9.3",
     "vite": "^5.4.10"
   }
 }

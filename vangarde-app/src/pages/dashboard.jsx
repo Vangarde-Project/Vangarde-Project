@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useAuth } from "../features/login/auth/useAuth";
 import {
   AlarmClock,
   Play,
@@ -19,7 +21,6 @@ import {
 import NotificationSidebar from "../features/login/components/layout/NotificationSidebar.jsx";
 
 export default function DashboardMiddle() {
-  const [notifOpen, setNotifOpen] = useState(false);
 
   return (
     <main className="flex-1 min-w-0 space-y-6">

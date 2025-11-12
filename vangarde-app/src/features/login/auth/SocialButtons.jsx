@@ -1,4 +1,5 @@
 import React from "react";
+import { signIn } from "next-auth/react";
 
 export default function SocialButtons({  handleSocialLogin }) {
   const socialButtons =
@@ -8,7 +9,7 @@ export default function SocialButtons({  handleSocialLogin }) {
     <div className="space-y-3">
       <button
         type="button"
-        onClick={() => handleSocialLogin("Google")}
+        onClick={() => signIn("google", { callbackUrl: "http://localhost:3000/dashboard" })}
         className={socialButtons}
       >
         <img src="/assets/google.png" alt="Google logo" className="w-5 h-5" />
