@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../../auth/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
+import { useSession, signOut as nextSignOut } from "next-auth/react";
 
 function initialsFrom(name = "Gebruiker") {
   return name
@@ -15,12 +16,21 @@ function initialsFrom(name = "Gebruiker") {
 export default function Header({ onMenu }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { data: session } = useSession();
 
-  const name = user?.name || "Gebruiker";
+  // prefer NextAuth session data, fall back to local user
+  const name = session?.user?.name ?? user?.name ?? "Gebruiker";
+  const avatarUrl = session?.user?.image ?? user?.avatarUrl;
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    if (session) {
+      // NextAuth sign out -> redirect to your Vite app home after sign-out
+      nextSignOut({ callbackUrl: "http://localhost:3000" });
+    } else {
+      // local logout
+      logout();
+      navigate("/login");
+    }
   };
 
   return (
@@ -93,21 +103,19 @@ export default function Header({ onMenu }) {
           </div>
         </div>
 
-        {/* === RIGHT: avatar + uitlogknop === */}
+        {/* === RIGHT: avatar + name + uitlogknop === */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
-            {user?.avatarUrl ? (
-              <img
-                src={user.avatarUrl}
-                alt={name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-xs font-semibold text-gray-700">
-                {initialsFrom(name)}
-              </span>
-            )}
+          {/* Avatar - show initials with colored background */}
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[#2F6BFF] to-[#7A21FF] flex-shrink-0 text-white font-semibold text-sm">
+            {initialsFrom(name)}
           </div>
+
+          {/* Name */}
+          {name && name !== "Gebruiker" && (
+            <span className="text-sm font-medium text-gray-800 hidden sm:inline">
+              {name}
+            </span>
+          )}
 
           {/* Zichtbare uitlogknop */}
           <button

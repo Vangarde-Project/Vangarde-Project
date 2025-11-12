@@ -27,3 +27,4 @@ dist-ssr
 /kvk-config.json
 .vercel
 .env.production
+.next
