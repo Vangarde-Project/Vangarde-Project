@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:vite": "vite",
+    "dev:next": "next dev -p 3001",
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:next\"",
     "mock": "node api/mockServer.js",
     "build": "next build",
     "preview": "vite preview",
