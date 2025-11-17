@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import useForm from "../../hooks/useForm";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/useAuth";
-import SocialButtons from "../../auth/SocialButtons";
+import useForm from "../../login/hooks/useForm";
+import { useRouter } from "next/router";
+import { useAuth } from "../../login/auth/useAuth";
+import SocialButtons from "../../login/auth/SocialButtons";
 import LegalLinks from "./LegalLinks";
 
 export default function LoginCard() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { login, signInWithProvider, isLoggedIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,9 +25,9 @@ export default function LoginCard() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/dashboard");
+      router.push("/dashboard");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ export default function LoginCard() {
   setLoading(false);
 
     if (result.ok) {
-      navigate("/dashboard");
+      router.push("/dashboard");
     } else {
       setError(result.error || "Ongeldige e-mail of wachtwoord.");
     }
@@ -153,13 +153,13 @@ export default function LoginCard() {
 
           {/* ✅ Enige functionele aanpassing:
               SocialButtons kliks -> ga direct naar /dashboard */}
-          <SocialButtons handleSocialLogin={() => navigate("")} />
+          <SocialButtons handleSocialLogin={() => router.push('/dashboard')} />
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Nog geen account?{" "}
             <button
               type="button"
-              onClick={() => navigate("/signup")}
+              onClick={() => router.push("/login/auth/signup")}
               className="text-blue-600 font-medium hover:underline"
             >
               Registreren

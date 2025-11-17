@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import { useAuth } from "./useAuth";
 
 /**
@@ -10,8 +10,10 @@ import { useAuth } from "./useAuth";
 export default function PublicRoute({ children }) {
   const { isLoggedIn } = useAuth();
 
+  const router = useRouter();
   if (isLoggedIn) {
-    return <Navigate to="/dashboard" replace />;
+    if (typeof window !== "undefined") router.replace("/dashboard");
+    return null;
   }
 
   return children;

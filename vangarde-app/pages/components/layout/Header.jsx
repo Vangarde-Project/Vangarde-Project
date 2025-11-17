@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
-import { useAuth } from "../../auth/useAuth.jsx";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../login/auth/useAuth";
+import { useRouter } from "next/router";
 import { useSession, signOut as nextSignOut } from "next-auth/react";
 
 function initialsFrom(name = "Gebruiker") {
@@ -15,7 +17,7 @@ function initialsFrom(name = "Gebruiker") {
 
 export default function Header({ onMenu }) {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { data: session } = useSession();
 
   // prefer NextAuth session data, fall back to local user
@@ -29,7 +31,7 @@ export default function Header({ onMenu }) {
     } else {
       // local logout
       logout();
-      navigate("/login");
+      router.push("/login");
     }
   };
 

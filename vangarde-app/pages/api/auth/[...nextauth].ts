@@ -5,6 +5,10 @@ import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/",
+    error: "/",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -14,6 +18,16 @@ export const authOptions: NextAuthOptions = {
     // AppleProvider({...})   // zodra je keys hebt
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Only redirect to dashboard if url is the signin page with callback
+      if (url.includes("/api/auth/signin")) {
+        return baseUrl + "/dashboard";
+      }
+      // Allow callback urls on the same origin
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
     async jwt({ token, account, profile, user }) {
       if (account) {
         token.provider = account.provider;
@@ -46,7 +60,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  debug: true,
 };
 
 export default NextAuth(authOptions);

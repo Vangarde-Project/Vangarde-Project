@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useAuth } from "../features/login/auth/useAuth";
+import DashboardLayout from "./components/layout/DashboardLayout";
 import {
   AlarmClock,
   Play,
@@ -18,12 +18,12 @@ import {
   Bell,
 } from "lucide-react";
 
-import NotificationSidebar from "../features/login/components/layout/NotificationSidebar.jsx";
-
-export default function DashboardMiddle() {
+function DashboardContent() {
+  const [notifOpen, setNotifOpen] = useState<boolean>(false);
 
   return (
-    <main className="flex-1 min-w-0 space-y-6">
+    <DashboardLayout>
+      <main className="flex-1 min-w-0 space-y-6">
       {/* Knop om meldingen te openen */}
       <div className="flex justify-end">
         <button
@@ -297,6 +297,11 @@ export default function DashboardMiddle() {
           </section>
         </section>
       </section>
-    </main>
+      </main>
+    </DashboardLayout>
   );
+}
+
+export default function DashboardPage() {
+  return <DashboardContent />;
 }
