@@ -54,7 +54,7 @@ function DashboardContent() {
             </h2>
 
             <p className="text-gray-600 max-w-xl">
-              Analyseer performance data en stel verhogingspercentages voor 24 medewerkers voor.
+              Analyseer performance data en stel verhogingspercentages voor 24 medewerkers voor
             </p>
           </div>
 
