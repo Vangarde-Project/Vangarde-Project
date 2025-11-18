@@ -1,17 +1,16 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+import { Pool } from "pg";
+import dotenv from "dotenv";
 
-const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  user: 'vangarde_app',
-  password: 'changeMe_strong',
-  database: 'vangarde'
+dotenv.config();
+
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+  max: 10,
 });
 
-export async function testConnection() {
-  const res = await pool.query('SELECT NOW()');
-  console.log('✅ Database verbonden:', res.rows[0].now);
+export async function pingDb() {
+  const r = await pool.query("SELECT 1 AS ok");
+  return r.rows[0].ok === 1;
 }
-
-export { pool };

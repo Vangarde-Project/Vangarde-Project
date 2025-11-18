@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useAuth } from "./useAuth";
 
@@ -12,12 +12,17 @@ export default function ProtectedRoute({ children }) {
   const isAuthenticated = localLoggedIn || session;
   const isLoading = status === "loading";
 
+  const router = useRouter();
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    if (typeof window !== "undefined") {
+      router.replace("/");
+    }
+    return null;
   }
 
   return children;

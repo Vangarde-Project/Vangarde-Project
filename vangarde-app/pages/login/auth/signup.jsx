@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import LegalLinks from "../components/ui/LegalLinks";
+import { useRouter } from "next/router";
+import LegalLinks from "../../components/ui/LegalLinks";
 
 // ✅ correcte paden o.b.v. jouw mapstructuur
 import useForm from "../hooks/useForm";
@@ -25,7 +25,7 @@ const EyeOffIcon = ({ className = "w-5 h-5" }) => (
 );
 
 export default function Signup() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { register } = useAuth();
 
   const {
@@ -193,7 +193,7 @@ export default function Signup() {
       const result = await register(formData);
       if (result.ok) {
         // useAuth.register probeert auto-login; navigeer direct naar dashboard
-        navigate("/dashboard");
+        router.push("/dashboard");
       } else {
         setError(result.error || "Registratie mislukt.");
       }
@@ -312,7 +312,7 @@ export default function Signup() {
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Heb je al een account?{" "}
-            <button type="button" onClick={() => navigate("/login")} className="text-blue-600 font-medium hover:underline">
+            <button type="button" onClick={() => router.push("/login")} className="text-blue-600 font-medium hover:underline">
               Inloggen
             </button>
           </p>

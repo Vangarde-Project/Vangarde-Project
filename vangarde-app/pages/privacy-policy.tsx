@@ -3,8 +3,8 @@ import {
   ShieldCheck, Mail, MapPin, Building2, ListChecks, CheckCircle2, Info, CalendarClock,
   FileText, Lock, Database, Cog, Globe2, RefreshCcw, Gavel
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import LegalLinks from "../features/login/components/ui/LegalLinks";
+import Link from "next/link";
+import LegalLinks from "./components/ui/LegalLinks";
 import { motion } from "framer-motion";
 
 // reusable ui 
@@ -83,16 +83,10 @@ const Sidebar = ({ sections, activeId, onJump }) => {
           <div className="my-4 h-px bg-slate-200" />
 
           <div className="grid gap-2">
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
-            >
+            <Link href="/login" className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50">
               Inloggen
             </Link>
-            <Link
-              to="/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-2 text-sm font-medium text-white shadow hover:opacity-95"
-            >
+            <Link href="/login/auth/signup" className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-2 text-sm font-medium text-white shadow hover:opacity-95">
               Registreren
             </Link>
           </div>

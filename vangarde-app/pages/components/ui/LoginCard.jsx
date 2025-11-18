@@ -1,14 +1,15 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import useForm from "../../hooks/useForm";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/useAuth";
-import SocialButtons from "../../auth/SocialButtons";
+import useForm from "../../login/hooks/useForm";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
+import { useAuth } from "../../login/auth/useAuth";
+import SocialButtons from "../../login/auth/SocialButtons";
 import LegalLinks from "./LegalLinks";
 
 export default function LoginCard() {
-  const navigate = useNavigate();
-  const { login, signInWithProvider, isLoggedIn } = useAuth();
+  const router = useRouter();
+  const { signInWithProvider, isLoggedIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,9 +26,9 @@ export default function LoginCard() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/dashboard");
+      router.push("/dashboard");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,14 +48,23 @@ export default function LoginCard() {
     }
 
   setLoading(true);
-  const result = await login({ email: values.email, password: values.password });
-  setLoading(false);
-
-    if (result.ok) {
-      navigate("/dashboard");
+  try {
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+    });
+    setLoading(false);
+    if (!res || res.error) {
+      setError(res?.error || "Ongeldige e-mail of wachtwoord.");
     } else {
-      setError(result.error || "Ongeldige e-mail of wachtwoord.");
+      router.push("/dashboard");
     }
+  } catch (err) {
+    setLoading(false);
+    setError("Onbekende fout bij inloggen.");
+    console.error("Verkeerd e-mail of wachtwoord");
+  }
   };
 
   const EyeIcon = ({ className = 'w-5 h-5' }) => (
@@ -153,13 +163,13 @@ export default function LoginCard() {
 
           {/* ✅ Enige functionele aanpassing:
               SocialButtons kliks -> ga direct naar /dashboard */}
-          <SocialButtons handleSocialLogin={() => navigate("")} />
+          <SocialButtons handleSocialLogin={() => router.push('/dashboard')} />
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Nog geen account?{" "}
             <button
               type="button"
-              onClick={() => navigate("/signup")}
+              onClick={() => router.push("/login/auth/signup")}
               className="text-blue-600 font-medium hover:underline"
             >
               Registreren

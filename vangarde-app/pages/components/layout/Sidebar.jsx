@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   LayoutDashboard,
   Bot,
@@ -24,7 +25,7 @@ const NAV_ITEMS = [
 ];
 
 function Sidebar({ open, onClose, collapsed, onToggle }) {
-  const { pathname } = useLocation();
+  const { pathname } = useRouter();
 
   const baseWidth = collapsed ? "w-14" : "w-56";
   const showLabels = !collapsed;
@@ -71,7 +72,7 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
               return (
                 <Link
                   key={href}
-                  to={href}
+                  href={href}
                   onClick={onClose}
                   title={collapsed ? label : undefined}
                   className={[
@@ -105,7 +106,7 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
               </div>
               <div className="space-y-2 text-[12px]">
                 <Link
-                  to="/tasks/new"
+                  href="/tasks/new"
                   onClick={onClose}
                   className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-1 px-2"
                 >
@@ -115,7 +116,7 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
                   <span>Nieuwe Taak</span>
                 </Link>
                 <Link
-                  to="/documents/new"
+                  href="/documents/new"
                   onClick={onClose}
                   className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-1 px-2"
                 >
@@ -125,7 +126,7 @@ function Sidebar({ open, onClose, collapsed, onToggle }) {
                   <span>Document Maken</span>
                 </Link>
                 <Link
-                  to="/analytics"
+                  href="/analytics"
                   onClick={onClose}
                   className="flex items-center gap-2 rounded-md hover:bg-gray-50 text-gray-800 py-1 px-2"
                 >
