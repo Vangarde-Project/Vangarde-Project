@@ -2,13 +2,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import useForm from "../../login/hooks/useForm";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import { useAuth } from "../../login/auth/useAuth";
 import SocialButtons from "../../login/auth/SocialButtons";
 import LegalLinks from "./LegalLinks";
 
 export default function LoginCard() {
   const router = useRouter();
-  const { login, signInWithProvider, isLoggedIn } = useAuth();
+  const { signInWithProvider, isLoggedIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -47,14 +48,23 @@ export default function LoginCard() {
     }
 
   setLoading(true);
-  const result = await login({ email: values.email, password: values.password });
-  setLoading(false);
-
-    if (result.ok) {
-      router.push("/dashboard");
+  try {
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+    });
+    setLoading(false);
+    if (!res || res.error) {
+      setError(res?.error || "Ongeldige e-mail of wachtwoord.");
     } else {
-      setError(result.error || "Ongeldige e-mail of wachtwoord.");
+      router.push("/dashboard");
     }
+  } catch (err) {
+    setLoading(false);
+    setError("Onbekende fout bij inloggen.");
+    console.error("Verkeerd e-mail of wachtwoord");
+  }
   };
 
   const EyeIcon = ({ className = 'w-5 h-5' }) => (

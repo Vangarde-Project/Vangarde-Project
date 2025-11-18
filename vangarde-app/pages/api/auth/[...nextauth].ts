@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 // import AzureADProvider from "next-auth/providers/azure-ad";
 // import AppleProvider from "next-auth/providers/apple";
 
@@ -10,6 +11,23 @@ export const authOptions: NextAuthOptions = {
     error: "/",
   },
   providers: [
+    // Credentials for local/dev form login (accepts test@vangarde.* with password '1234')
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const allowed = ["test@vangarde.nl", "test@vangarde.ai"];
+        const email = (credentials?.email || "").toString().trim().toLowerCase();
+        const password = (credentials?.password || "").toString();
+        if (allowed.includes(email) && password === "1234") {
+          return { name: "Test Gebruiker", email, role: "HR-analist" } as any;
+        }
+        return null;
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
