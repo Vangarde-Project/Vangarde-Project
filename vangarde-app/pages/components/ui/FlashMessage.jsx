@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useAuth } from "../../auth/useAuth";
+import { useAuth } from "../../login/auth/useAuth";
 
 export default function FlashMessage() {
   const { flash } = useAuth();
